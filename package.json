@@ -1,0 +1,12 @@
+{
+  "name": "revista",
+  "version": "0.0.0",
+  "description": "Test mysql nodejs",
+  "main": "server.js",
+  "repository": "",
+  "author": "Carlos Troyano Carmona <carlos.troyano.carmona@gmail.com>",
+  "dependencies": {
+    "express": "~3.2.4",
+    "mysql": "^2.5.4"
+  }
+}
