@@ -1,0 +1,64 @@
+header
+  // Top
+  nav#top
+    .container
+      .row
+        .col-md-6
+          strong ¡Bienvenido!
+        .col-md-6
+          ul.list-inline.top-link.link
+            li
+              a(href='index.html')
+                i.fa.fa-home
+                |  Home
+            li
+              a(href='contact.html')
+                i.fa.fa-comments
+                |  Contacto
+            li
+              a(href='#')
+                i.fa.fa-question-circle
+                |  FAQ
+  // Navigation
+  nav#menu.navbar.container
+    .navbar-header
+      button.btn.btn-navbar.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
+        i.fa.fa-bars
+      a.navbar-brand(href='#')
+        .logo
+          span Newspaper
+    .collapse.navbar-collapse.navbar-ex1-collapse
+      ul.nav.navbar-nav
+        li
+          a(href='index.html') Home
+         each item, i in menu.arrayMenu
+           li.dropdown
+             a.dropdown-toggle(href='#', data-toggle='dropdown')
+               | #{item.zona}  
+               i.fa.fa-arrow-circle-o-down
+             .dropdown-menu
+               .dropdown-inner
+                 ul.list-unstyled
+                   each municipio, i in item.municipios
+                     li
+                       a(href='./show?id=#{municipio.id}&municipio=#{municipio.nombre}') #{municipio.nombre}
+        li
+          a(href='contact.html')
+            i.fa.fa-envelope
+            |  Contacto
+      ul.list-inline.navbar-right.top-social
+        li
+          a(href='#')
+            i.fa.fa-facebook
+        li
+          a(href='#')
+            i.fa.fa-twitter
+        li
+          a(href='#')
+            i.fa.fa-pinterest
+        li
+          a(href='#')
+            i.fa.fa-google-plus-square
+        li
+          a(href='#')
+            i.fa.fa-youtube
