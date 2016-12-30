@@ -1,0 +1,19 @@
+.container
+  .row
+    ul.nav.nav-tabs
+      li.active
+        a(data-toggle='tab', href='#home') Insertar
+      li
+        a(data-toggle='tab', href='#menu1') Modificar
+      li
+        a(data-toggle='tab', href='#menu2') Otros
+    .tab-content
+      #home.tab-pane.active
+        include formClient
+      #menu1.tab-pane.fade
+        h3 Menu 1
+        p Some content in menu 1.
+      #menu2.tab-pane.fade
+        h3 Menu 2
+        p Some content in menu 2.
+

@@ -6,7 +6,12 @@
   "repository": "",
   "author": "Carlos Troyano Carmona <carlos.troyano.carmona@gmail.com>",
   "dependencies": {
+    "busboy": "^0.2.13",
+    "connect-busboy": "0.0.2",
     "express": "~3.2.4",
+    "fs": "0.0.1-security",
+    "jade": "^1.11.0",
+    "multer": "^1.2.1",
     "mysql": "^2.5.4"
   }
 }

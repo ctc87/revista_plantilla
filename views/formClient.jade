@@ -1,0 +1,54 @@
+.container
+  .col-sm-3
+  .col-sm-6
+      .col-sm-12
+        .col-sm-12
+            .col-sm-12
+              .col-sm-2
+              .col-sm-8
+                h1.center-block Nuevo Cliente
+            br
+            form(role='form', autocomplete='off', enctype='multipart/form-data', action='uploadUserImage', method='post')
+             .col-sm-12
+                 .col-sm-2
+                 .form-group.col-sm-8
+                   .form-group
+                   label(for='name') Nombre:
+                   input#name.form-control(type='text', name='name')
+             .col-sm-12
+                 .col-sm-2
+                 .form-group.col-sm-8
+                    label.control-label(for='sel2') Municipio:
+                    select#sel2.form-control(name="municipio")
+                        each item, i in menu.arrayMenu
+                          each municipio, i in item.municipios
+                                option(value='#{municipio.nombre}') #{municipio.nombre}
+             .col-sm-12
+                .col-sm-2
+                .control-group.col-sm-8
+                  label.custom-file Logo
+                    input#file.custom-file-input(type='file', name='file')
+                    span.custom-file-control
+             .col-sm-12
+                .col-sm-2
+                .col-sm-8
+                  label.control-label(for='fields') Mails(Max:2)
+                    #fields.control-group
+                      .controls
+                        .grow
+                          .entry.input-group
+                            input.exampleInputEmail1.form-control(value="g@g" name='mails[]', type='email', placeholder='Mail', aria-describedby="emailHelp")
+                            span.input-group-btn
+                              button.btn.btn-success.btn-add-mail.btn-lg(type='button')
+                                span.glyphicon.glyphicon-plus
+              .col-sm-12
+                .col-sm-2
+                .col-sm-8
+                    label.control-label(for='tamnyo-add') Tamaño del anuncio:
+              .col-sm-12
+                include formPlantillas 
+              .col-sm-12
+                br
+                .col-sm-2
+                .col-sm-8
+                    button.btn.btn-success.center-block(type="submit") Enviar

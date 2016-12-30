@@ -1,10 +1,9 @@
 -- Borramos la base de datos si existe
 DROP DATABASE IF EXISTS revista;
 -- creamos la base de datos
-create DATABASE revista;
+CREATE DATABASE revista CHARACTER SET utf8 COLLATE=utf8_spanish_ci;
 
 USE revista;
-
 
 
 
@@ -15,9 +14,10 @@ create table zonas (
 );
 
 
-create table municipios(
+create table municipios (
     id_municipio MEDIUMINT NOT NULL AUTO_INCREMENT,
     id_zona MEDIUMINT NOT NULL,
+    nombre_municipio VARCHAR(200),
     PRIMARY KEY (id_municipio),
     FOREIGN KEY (id_zona) REFERENCES zonas(id_zona)
 );
