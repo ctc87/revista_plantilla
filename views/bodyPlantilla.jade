@@ -1,0 +1,93 @@
+mixin anuncio2x4(clientes, i)
+    if(i == 0)
+        .item.active
+            +contenidoAnuncio2x4(clientes, i)
+    else
+        .item
+            +contenidoAnuncio2x4(clientes, i)
+            
+mixin contenidoAnuncio2x4(clientes, i)
+    p
+    img(src="./#{clientes[i].logo}", alt='#{clientes[i].nombre}')
+    // Static Header
+    .header-text.hidden-xs
+      .col-md-12.text-center
+        h2 #{clients[i].nombre}
+        br
+        h3 Telefono:#{clients[i].telefonos[0]}
+        h3 Mail:#{clients[i].emails[0]}
+        br
+
+.featured.container
+  .row
+    .col-sm-8
+      // Carousel
+      #carousel-example-generic.carousel.slide(data-ride='carousel')
+        // Indicators
+        ol.carousel-indicators
+          li.active(data-target='#carousel-example-generic', data-slide-to='0')
+          li(data-target='#carousel-example-generic', data-slide-to='1')
+          li(data-target='#carousel-example-generic', data-slide-to='2')
+        // Wrapper for slides
+        .carousel-inner
+            each client, index in clients
+                +anuncio2x4(clients, index)
+            
+        // Controls
+        a.left.carousel-control(href='#carousel-example-generic', data-slide='prev')
+          span.glyphicon.glyphicon-chevron-left
+        a.right.carousel-control(href='#carousel-example-generic', data-slide='next')
+          span.glyphicon.glyphicon-chevron-right
+      // /carousel
+    // .col-sm-4
+    //   #owl-demo-1.owl-carousel
+    //     img(src='images/slide-2.jpg')
+    //     img(src='images/slide-1.jpg')
+    //     img(src='images/slide-3.jpg')
+    //   #carousel-example-generic2.carousel.slide(data-ride='carousel')
+    //     // Indicators
+    //     ol.carousel-indicators
+    //       li.active(data-target='#carousel-example-generic2', data-slide-to='0')
+    //       li(data-target='#carousel-example-generic2', data-slide-to='1')
+    //       li(data-target='#carousel-example-generic2', data-slide-to='2')
+    //     // Wrapper for slides
+    //     .carousel-inner
+    //       .item.active
+    //         p
+    //         img(src='images/m2.png', alt='First slide')
+    //         // Static Header
+    //         .header-text.hidden-xs
+    //           .col-md-12.text-center
+    //             h2 Empresa Z
+    //             br
+    //             h3 Telefono:605786897
+    //             h3 Mail:cacacac@gamail.com
+    //             br
+    //         // /header-text
+    //       .item
+    //         img(src='images/m5.png', alt='Second slide')
+    //         // Static Header
+    //         .header-text.hidden-xs
+    //           .col-md-12.text-center
+    //             h2 Aenean feugiat in ante et blandit. Vestibulum
+    //             br
+    //             h3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    //             br
+    //         // /header-text
+    //       .item
+    //         img(src='images/m6.png', alt='Third slide')
+    //         // Static Header
+    //         .header-text.hidden-xs
+    //           .col-md-12.text-center
+    //             h2 Curabitur tincidunt porta lorem vitae
+    //             br
+    //             h3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    //             br
+    //         // /header-text
+    //     // Controls
+    //     a.left.carousel-control(href='#carousel-example-generic2', data-slide='prev')
+    //       span.glyphicon.glyphicon-chevron-left
+    //     a.right.carousel-control(href='#carousel-example-generic2', data-slide='next')
+    //       span.glyphicon.glyphicon-chevron-right
+    //   // /carousel
+    //   // <img src="images/banner.jpg" />
