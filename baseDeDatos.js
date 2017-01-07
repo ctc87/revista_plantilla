@@ -3,10 +3,21 @@
   interfaceDB.objetoIds = {
     id_cliente: "",
     id_zona: "",
-    id_municipio: ""
+    id_municipio: "",
+    id_noticia: ""
   }
   
-  interfaceDB.arrayClientes = [];
+  interfaceDB.arrayClientes2x4 = [];
+  interfaceDB.arrayClientes1x2 = [];
+  interfaceDB.arrayClientes1x1 = [];
+  interfaceDB.arrayNoticias = [];
+  
+  interfaceDB.resetArrays = function() {
+    interfaceDB.arrayClientes2x4 = [];
+    interfaceDB.arrayClientes1x2 = [];
+    interfaceDB.arrayClientes1x1 = [];
+    interfaceDB.arrayNoticias = [];
+  }
   
   var mysql = require('mysql'); // librería mysql
   interfaceDB.objetoMenu = {"arrayMenu":[]};
@@ -81,24 +92,71 @@
     return arrayMunicipios;
   }
   
-
+  function resumirNoticia(_noticia, _link) {
+    var matching = _noticia.match(/\<p\>(.*)\<\/p\>/)
+    return '<p>' + matching[1] + '<a href="' + _link + '"> Leer m&aacute;s...</a></p>';
+  }
   
-  interfaceDB.crearObjetoCuerpoMunicipio = function(_id_municipio, callback) {
+  interfaceDB.crearobjetoCuerpoNoticias = function(_id_municipio, _noResumen,  callback) {
+    var query = 'Select * FROM `noticias` ' +  
+    'where id_municipio = ' + _id_municipio + ';';
     var completed = false;
     var i = 0;
-    var query = 'Select clientes.id_cliente, clientes.nombre, logos.ruta From `clientes` inner join logos on ' +  
-    'clientes.id_cliente = logos.id_cliente ' +
-    'where id_municipio = ' + _id_municipio + ';';
-    // console.log(query);
-     interfaceDB.connection.query(query, function(err, rows, fields) {
+    interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         for(var key in rows) {
-          console.log("iter")
           i++;
           if(!(i<rows.length)) {
             completed = true;
           }
-        interfaceDB.arrayClientes.push({
+          var link = '/news?id_municipio=' + rows[key].id_municipio + '&id_noticia=' + rows[key].id_noticia;
+          if(_noResumen.action) {
+            var contenido = resumirNoticia(rows[key].contenido,link)
+          } else {
+            var contenido = _noResumen.id_noticia != rows[key].id_noticia ? resumirNoticia(rows[key].contenido,link) : rows[key].contenido;
+          }
+          interfaceDB.arrayNoticias.push({
+            id_noticia: rows[key].id_noticia,
+            id_municipio: rows[key].id_municipio,
+            titular: rows[key].titular,
+            fecha: rows[key].fecha,
+            imagen: rows[key].ruta_foto,
+            fuente_enclace: rows[key].fuente_enclace,
+            fuente_nombre: rows[key].fuente_nombre,
+            contenido: contenido
+          });
+        } 
+        if(completed)
+          callback();
+      } else {
+        console.log('Error en la consulta de noticias.');
+      }
+    });
+  }
+  
+  interfaceDB.crearObjetoCuerpoMunicipio = function(_id_municipio, callback) {
+    var completed = false;
+    var i = 0;
+    var query = 'Select clientes.id_cliente, clientes.nombre, logos.ruta, logos.tamanyo_formato From `clientes` inner join logos on ' +  
+    'clientes.id_cliente = logos.id_cliente ' +
+    'where id_municipio = ' + _id_municipio + ';';
+     interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        for(var key in rows) {
+          i++;
+          if(!(i<rows.length)) {
+            completed = true;
+          }
+        var arrayAux = [];
+        
+        if(rows[key].tamanyo_formato == "2x4")
+          arrayAux = interfaceDB.arrayClientes2x4;
+        else if(rows[key].tamanyo_formato == "1x2")
+          arrayAux = interfaceDB.arrayClientes1x2;
+        else if(rows[key].tamanyo_formato == "1x1")
+          arrayAux = interfaceDB.arrayClientes1x1;
+        
+        arrayAux.push({
           id_cliente: rows[key].id_cliente,
           nombre: rows[key].nombre,
           logo: rows[key].ruta,
@@ -156,8 +214,8 @@
   
   
   interfaceDB.insertarCliente  = function(_nombre, _municipio, callback) {
-    var query = 'INSERT INTO `clientes` (`nombre`, `id_zona`, `id_municipio`) ' +  
-      'VALUES ("' + _nombre + '", 1 ,  ' + _municipio + ');';
+    var query = 'INSERT INTO `clientes` (`nombre`, `id_municipio`) ' +  
+      'VALUES ("' + _nombre + '",  ' + _municipio + ');';
     
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
@@ -169,11 +227,34 @@
     
   };
   
-  interfaceDB.insertarLogo = function(_ruta, _nombre_archivo, _extension, _id_cliente, callback) {
-    var query = 'INSERT INTO `logos`(`ruta`, `nombre_archivo`, `extension`, `id_cliente`)' +
+  interfaceDB.insertarNoticia = function(_titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, callback) {
+    var query = 'INSERT INTO `noticias`(`fecha`, `fuente_nombre`, `fuente_enclace`, `titular`, `contenido`, `ruta_foto`, `id_municipio`)' +
+      ' VALUES ("' + _fecha + 
+        '" , "' + _nombreFuente +
+        '" , "' + _enlaceFuente + 
+        '" , "' + _titular + 
+        '" , \'' + _contenido + 
+        '\' , "' + _imagen + 
+        '" ,' + _municipio + ');'; 
+    
+    console.log('query not insert', query);
+        
+   interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la insercion de la noticia.');
+      }
+    });
+  }
+  
+  interfaceDB.insertarLogo = function(_ruta, _nombre_archivo, _extension, _tamanyo_formato, _id_cliente, callback) {
+    var query = 'INSERT INTO `logos`(`ruta`, `nombre_archivo`, `extension`,`tamanyo_formato`, `id_cliente`)' +
       ' VALUES ("' + _ruta + 
         '" , "' + _nombre_archivo +
         '" , "' + _extension + 
+        '" , "' + _tamanyo_formato + 
         '" ,' + _id_cliente + ');';
         
    interfaceDB.connection.query(query, function(err, rows, fields) {
@@ -204,10 +285,9 @@
   
   interfaceDB.obtenerIdMunicipioNombre = function(_nombre, callback) {
     var query = 'Select id_municipio From `municipios` where nombre_municipio = "' + _nombre + '";';
-    console.log(query)
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
-        console.log(rows[0].id_municipio);
+        // console.log(rows[0].id_municipio);
         interfaceDB.objetoIds.id_municipio = rows[0].id_municipio;
         callback();
       } else {

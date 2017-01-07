@@ -1,0 +1,62 @@
+.container
+  .col-sm-1
+  .col-sm-10
+    .col-sm-12.text-center
+      h1.center-block Nueva Noticia
+      br
+      form(role='form', autocomplete='off', enctype='multipart/form-data', action='uploadNoticiaImage', method='post')
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+             .form-group
+             label(for='titular') Titular:
+             input#titular.form-control(type='text', name='titular')
+        .col-sm-12
+          .col-sm-2
+          .col-sm-8
+            .form-group
+              label.control-label(for='datetimepicker1') Fecha:
+              #datetimepicker1.input-group.date
+                input.form-control(type='text' name="fecha")
+                span.input-group-addon
+                  span.glyphicon.glyphicon-th
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+              label.control-label(for='sel2') Municipio:
+              select#sel2.form-control(name="municipio")
+                  each item, i in menu.arrayMenu
+                    each municipio, i in item.municipios
+                          option(value='#{municipio.nombre}') #{municipio.nombre}
+       .col-sm-12
+          .col-sm-2
+          .control-group.col-sm-8
+            label.custom-file Foto
+              input#file.custom-file-input(type='file', name='file')
+              span.custom-file-control
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+             .form-group
+             label(for='fuenteNombre') Enlace a la fuente original:
+             input#fuenteEnlace.form-control(type='text', name='fuenteEnlace')
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+             .form-group
+             label(for='fuenteNombre') Nombre de la fuente:
+             input#fuenteNombre.form-control(type='text', name='fuenteNombre')
+        .col-sm-12
+          .form-group
+            label(for='contenido') Contenido:
+            textarea#contenido.form-control(rows='5' name="contenido")
+        .col-sm-12
+          br
+          .col-sm-2
+          .col-sm-8
+              button.btn.btn-success.center-block(type="submit") Enviar
+br
+script(type='text/javascript').
+  $(function () {
+    $('#datetimepicker1').datetimepicker();
+  });

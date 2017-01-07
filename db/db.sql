@@ -26,23 +26,21 @@ create table clientes (
     id_cliente MEDIUMINT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(200),
     PRIMARY KEY (id_cliente),
-    id_zona MEDIUMINT NOT NULL, -- solo en desarrollo
     id_municipio MEDIUMINT NOT NULL,
-    FOREIGN KEY (id_zona) REFERENCES zonas(id_zona),
     FOREIGN KEY (id_municipio) REFERENCES municipios(id_municipio)
 );
 
 create table telefonos (
-    id_telefono MEDIUMINT NOT NULL AUTO_INCREMENT,
+    telefono varchar(20),
     id_cliente MEDIUMINT NOT NULL,
-    PRIMARY KEY (id_telefono),
+    PRIMARY KEY (telefono),
     FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
 );
 
 create table emails(
-    id_mail MEDIUMINT NOT NULL AUTO_INCREMENT,
+    mail VARCHAR(200),
     id_cliente MEDIUMINT NOT NULL,
-    PRIMARY KEY (id_mail),
+    PRIMARY KEY (mail),
     FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
 );
 
@@ -51,7 +49,21 @@ create table logos(
     ruta VARCHAR(500),
     nombre_archivo VARCHAR(200),
     extension VARCHAR(10),
+    tamanyo_formato VARCHAR(10),
     id_cliente MEDIUMINT NOT NULL,
     PRIMARY KEY (id_logo),
     FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+create table noticias(
+    id_noticia MEDIUMINT NOT NULL AUTO_INCREMENT,
+    fecha DATE,
+    fuente_nombre VARCHAR(500),
+    fuente_enclace varchar(500),
+    titular VARCHAR(100),
+    contenido VARCHAR(5000),
+    ruta_foto VARCHAR(100),
+    id_municipio MEDIUMINT NOT NULL,
+    PRIMARY KEY (id_noticia),
+    FOREIGN KEY (id_municipio) REFERENCES municipios(id_municipio)
 );

@@ -8,7 +8,7 @@ header
         .col-md-6
           ul.list-inline.top-link.link
             li
-              a(href='index.html')
+              a(href='/')
                 i.fa.fa-home
                 |  Home
             li
@@ -30,7 +30,7 @@ header
     .collapse.navbar-collapse.navbar-ex1-collapse
       ul.nav.navbar-nav
         li
-          a(href='index.html') Home
+          a(href='/') Home
          each item, i in menu.arrayMenu
            li.dropdown
              a.dropdown-toggle(href='#', data-toggle='dropdown')
@@ -38,10 +38,12 @@ header
                i.fa.fa-arrow-circle-o-down
              .dropdown-menu
                .dropdown-inner
-                 ul.list-unstyled
-                   each municipio, i in item.municipios
-                     li
-                       a(href='./show?id=#{municipio.id}&municipio=#{municipio.nombre}') #{municipio.nombre}
+                  ul.list-unstyled
+                    each municipio, i in item.municipios
+                      li
+                        a(href='./show?id=#{municipio.id}&municipio=#{municipio.nombre}') #{municipio.nombre}
+                          
+                       
         li
           a(href='contact.html')
             i.fa.fa-envelope

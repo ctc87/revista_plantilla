@@ -27,21 +27,6 @@
 box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
 }
 
-body {
- background-image: url("./img/back.jpg") ;
-}
-
-/* navbar */
-/*.navbar-default {*/
-/*    background-color: #548FD9 !important;*/
-/*    border-color: #E7E7E7 !important;*/
-/*}*/
-
-/* navbar */
-/*.navbar-collapse {*/
-/*    background-color: #548FD9 !important;*/
-/*    border-color: #E7E7E7 !important;*/
-/*}*/
 
 .red {
  background-color: red;
