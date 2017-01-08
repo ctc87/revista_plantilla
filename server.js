@@ -1,77 +1,7 @@
 var express    = require("express");
 var interfaceDB = require('./baseDeDatos'); // gestión de la base de datos
 var interfaceIMG = require('./imagenes'); // gestión de las imagenes
-var fs = require('fs'); // manejo sistea de ficheros
-var multer  = require('multer'); // subida de archivos al servidor
-var lwip = require("lwip");
 
-/* configuración de la subida de archivos para imagenes */
-// FALTA GESTIONAR EL TAMAÑO
-var upload = multer({
-  dest:'uploads/',
-  inMemory: true, 
-  fileFilter: function (req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-        return cb(new Error('Solo se aceptan imagnes como subida'));
-    }
-    cb(null, true);
-  }
-}).single('file');
-
-
-function putAspectRatioThreeOnepointFive(img_name) {
-  // manicpualción de imagenes
-  
-lwip.open(img_name, function(err, image){
-  if(!err) {
-    var w = image.width();
-    var h = image.height();
-    // var newW = 400;
-    // var divisior = w / newW;
-    var newH = (w / 3) * 1.5;
-    // console.log(newW, newH);
-    // check err...
-    // define a batch of manipulations and save to disk as JPEG:
-    image.batch()
-      // .resize(newW, newH)          // scale to 75%
-      // .rotate(45, 'white')  // rotate 45degs clockwise (white fill)
-      .crop(w, newH)       // crop a 200X200 square from center
-      .writeFile(img_name, function(err){
-        // check err...
-        // done.
-      });
-    } else {
-      console.log('error en abrir la imagen', err);
-    }
-});  
-}
-
-function putAspectRatioMiniumImageClient(img_name) {
-  // manicpualción de imagenes
-  
-lwip.open(img_name, function(err, image){
-  if(!err) {
-    var w = image.width();
-    var h = image.height();
-    // var newW = 400;
-    // var divisior = w / newW;
-    var newH = (w / 683) * 384;
-    // console.log(newW, newH);
-    // check err...
-    // define a batch of manipulations and save to disk as JPEG:
-    image.batch()
-      // .resize(newW, newH)          // scale to 75%
-      // .rotate(45, 'white')  // rotate 45degs clockwise (white fill)
-      .crop(w, newH)       // crop a 200X200 square from center
-      .writeFile(img_name, function(err){
-        // check err...
-        // done.
-      });
-    } else {
-      console.log('error en abrir la imagen', err);
-    }
-});  
-}
 
 
   
@@ -86,7 +16,7 @@ app.use('/uploads', express.static('uploads'));
 
 // formulario de inserción de noticia con imagen
 app.post('/uploadNoticiaImage', function(req, res) {
-  upload(req, res, function (err) {
+  interfaceIMG.upload(req, res, function (err) {
     if (err) {
         console.log("error" , err)
         // MANEJAR AQUI ERROR extension tamaño
@@ -111,34 +41,29 @@ app.post('/uploadNoticiaImage', function(req, res) {
           console.log("insertada noticia");
         });
     });
-    var tmp_path = req.file.path; // path temporal del archivo
-    var src = fs.createReadStream(tmp_path); // creamos un buffer de lectura del archivo temporal subido
-    var dest = fs.createWriteStream(target_path); // fijamos un archivo de destino
-    src.pipe(dest); // conectamos mediante una tuberia el buffer de entrada con el archivo de destino
-    src.on('end', function() { // terminada lectura del archivo
-      fs.unlink(tmp_path) // borramos temporal
-      putAspectRatioThreeOnepointFive(target_path); // cambiamos el aspect ratio
-      res.redirect("/config/noticias#insertar");
-    });
-    src.on('error', function(err) {
+    interfaceIMG.guardarImagen(req.file.path, target_path, interfaceIMG.putAspectRatioThreeOnepointFive,
+    function(){
+        res.redirect("/config/noticias#insertar");
+    },
+    function(){
       res.render('error' + err);   // Manejar aqui error de escritura 
     });
   });
 });
 
 app.post('/uploadUserImage', function (req, res) {
-  upload(req, res, function (err) {
+  interfaceIMG.upload(req, res, function (err) {
     if (err) {
-        console.log("errir" , err)
-        // MANEJAR AQUI ERROR extension tamaño
-        // An error occurred when uploading
-        return
+      console.log("errir" , err)
+      // MANEJAR AQUI ERROR extension tamaño
+      // An error occurred when uploading
+      return
     }
-   if(!req.file) {
-     // gestionar el error de falta de imagen
-    // console.log(req.body)
-     return
-   }
+    if(!req.file) {
+      // gestionar el error de falta de imagen
+      // console.log(req.body)
+      return
+    }
     var extension = req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/)[1];
     interfaceDB.obtenerIdMunicipioNombre(req.body.municipio, function(){
       interfaceDB.insertarCliente(
@@ -162,31 +87,26 @@ app.post('/uploadUserImage', function (req, res) {
           });
         });    
     });
-     
-    var tmp_path = req.file.path; // path temporal del archivo
+    var funcionAspectRatio;
+    if(req.body.tamnyo_add == '1x1') {
+      funcionAspectRatio = interfaceIMG.putAspectRatioMiniumImageClient;
+    } else if(req.body.tamnyo_add == '2x4') {
+      funcionAspectRatio = interfaceIMG.putAspectRatioThreeOnepointFive; 
+    }
     var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
-    var src = fs.createReadStream(tmp_path); // creamos un buffer de lectura del archivo temporal subido
-    var dest = fs.createWriteStream(target_path); // fijamos un archivo de destino
-    src.pipe(dest); // conectamos mediante una tuberia el buffer de entrada con el archivo de destino
-    src.on('end', function() { // terminada lectura del archivo
-      fs.unlink(tmp_path) // borramos temporal
-      // cambiamos el aspect ratio
-      if(req.body.tamnyo_add == '1x1') {
-        putAspectRatioMiniumImageClient(target_path);
-      } else if(req.body.tamnyo_add == '2x4') {
-        putAspectRatioThreeOnepointFive(target_path); 
-      }
+    interfaceIMG.guardarImagen(req.file.path, target_path, funcionAspectRatio,
+    function(){
       res.redirect("/config/clientes#insertar");
-    });
-    src.on('error', function(err) {
+    },
+    function(){
       res.render('error' + err);   // Manejar aqui error de escritura 
-    }); 
+    });
   });
 });
 
 /* MODIFICAR CLIENTES */
 app.get('/config/modificarCliente', function (req, res) {
-   upload(req, res, function (err) {
+   interfaceIMG.upload(req, res, function (err) {
     var imagen
     if (err) {
         console.log("errir" , err)
@@ -222,25 +142,20 @@ app.get('/config/modificarCliente', function (req, res) {
           });
         });    
     });
-     
-    var tmp_path = req.file.path; // path temporal del archivo
+    var funcionAspectRatio;
+    if(req.body.tamnyo_add == '1x1') {
+      funcionAspectRatio = interfaceIMG.putAspectRatioMiniumImageClient;
+    } else if(req.body.tamnyo_add == '2x4') {
+      funcionAspectRatio = interfaceIMG.putAspectRatioThreeOnepointFive; 
+    }
     var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
-    var src = fs.createReadStream(tmp_path); // creamos un buffer de lectura del archivo temporal subido
-    var dest = fs.createWriteStream(target_path); // fijamos un archivo de destino
-    src.pipe(dest); // conectamos mediante una tuberia el buffer de entrada con el archivo de destino
-    src.on('end', function() { // terminada lectura del archivo
-      fs.unlink(tmp_path) // borramos temporal
-      // cambiamos el aspect ratio
-      if(req.body.tamnyo_add == '1x1') {
-        putAspectRatioMiniumImageClient(target_path);
-      } else if(req.body.tamnyo_add == '2x4') {
-        putAspectRatioThreeOnepointFive(target_path); 
-      }
+    interfaceIMG.guardarImagen(req.file.path, target_path, funcionAspectRatio,
+    function(){
       res.redirect("/config/clientes#insertar");
-    });
-    src.on('error', function(err) {
+    },
+    function(){
       res.render('error' + err);   // Manejar aqui error de escritura 
-    }); 
+    });
   });
 });
 

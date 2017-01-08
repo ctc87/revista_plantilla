@@ -98,3 +98,20 @@ $(function()
   //   });
   //   return arrayMails;
   // }
+  
+//   interfaceDB.insertarEmails = function(_emails, _id_cliente, callback) {
+//     var query = 'INSERT INTO `emails`(`id_cliente`, `mail`) VALUES ';
+//     for(var i = 0; i < _emails.length; i++) {
+//       if(i != _emails.length - 1)
+//         query += '('+ _id_cliente +', "'+ _emails[i] +'"), ';
+//       else 
+//         query += '('+ _id_cliente +', "'+ _emails[i] +'") ';
+//     }
+//      interfaceDB.connection.query(query, function(err, rows, fields) {
+//       if (!err) {
+//         callback();
+//       } else {
+//         console.log('Error en la insercion de los emails.');
+//       }
+//     });
+//   }
