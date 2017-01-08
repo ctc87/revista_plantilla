@@ -1,5 +1,6 @@
 var express    = require("express");
 var interfaceDB = require('./baseDeDatos'); // gestión de la base de datos
+var interfaceIMG = require('./imagenes'); // gestión de las imagenes
 var fs = require('fs'); // manejo sistea de ficheros
 var multer  = require('multer'); // subida de archivos al servidor
 var lwip = require("lwip");
@@ -116,14 +117,8 @@ app.post('/uploadNoticiaImage', function(req, res) {
     src.pipe(dest); // conectamos mediante una tuberia el buffer de entrada con el archivo de destino
     src.on('end', function() { // terminada lectura del archivo
       fs.unlink(tmp_path) // borramos temporal
-      
       putAspectRatioThreeOnepointFive(target_path); // cambiamos el aspect ratio
-      interfaceDB.crearObjetoMenu(function() {
-      var objectShow = {}
-      objectShow.menu = interfaceDB.objetoMenu;
-      objectShow.anchor = "#menu1";
-        res.render('indexBackend', objectShow);
-      }); // creamos objeto menu
+      res.redirect("/config/noticias#insertar");
     });
     src.on('error', function(err) {
       res.render('error' + err);   // Manejar aqui error de escritura 
@@ -131,7 +126,6 @@ app.post('/uploadNoticiaImage', function(req, res) {
   });
 });
 
-// formulario subida imagen, hay que gestionar la subida de tods los datos
 app.post('/uploadUserImage', function (req, res) {
   upload(req, res, function (err) {
     if (err) {
@@ -147,23 +141,26 @@ app.post('/uploadUserImage', function (req, res) {
    }
     var extension = req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/)[1];
     interfaceDB.obtenerIdMunicipioNombre(req.body.municipio, function(){
-        interfaceDB.insertarCliente(req.body.name, interfaceDB.objetoIds.id_municipio ,
+      interfaceDB.insertarCliente(
+        req.body.name, 
+        interfaceDB.objetoIds.id_municipio,
+        req.body.telefono, 
+        req.body.email, 
+        req.body.web, 
         function() {
-          interfaceDB.obtenerIdClienteNombre(req.body.name, function() {
-              interfaceDB.insertarEmails(req.body.mails, interfaceDB.objetoIds.id_cliente, 
-              function() {
-                interfaceDB.insertarLogo(
-                  'uploads/'+req.file.originalname, 
-                  req.file.originalname, 
-                  extension,
-                  req.body.tamnyo_add,
-                  interfaceDB.objetoIds.id_cliente, 
-                  function(){
-                    console.log("llegue")                  
-                  });
-                });
-            });    
-        });
+        interfaceDB.obtenerIdClienteNombre(req.body.name, 
+          function() {
+            interfaceDB.insertarLogo(
+              'uploads/'+req.file.originalname, 
+              req.file.originalname, 
+              extension,
+              req.body.tamnyo_add,
+              interfaceDB.objetoIds.id_cliente, 
+              function(){
+                // console.log("llegue"); // finalizada inserción                  
+              });
+          });
+        });    
     });
      
     var tmp_path = req.file.path; // path temporal del archivo
@@ -179,13 +176,7 @@ app.post('/uploadUserImage', function (req, res) {
       } else if(req.body.tamnyo_add == '2x4') {
         putAspectRatioThreeOnepointFive(target_path); 
       }
-      
-      interfaceDB.crearObjetoMenu(function() {
-      var objectShow = {}
-      objectShow.menu = interfaceDB.objetoMenu;
-      objectShow.anchor = "#home"
-        res.render('indexBackend', objectShow);
-      }); // creamos objeto menu
+      res.redirect("/config/clientes#insertar");
     });
     src.on('error', function(err) {
       res.render('error' + err);   // Manejar aqui error de escritura 
@@ -193,7 +184,91 @@ app.post('/uploadUserImage', function (req, res) {
   });
 });
 
-/** BACKEND falta configurar los estilos  y el inicio de sesion */
+/* MODIFICAR CLIENTES */
+app.get('/config/modificarCliente', function (req, res) {
+   upload(req, res, function (err) {
+    var imagen
+    if (err) {
+        console.log("errir" , err)
+        // MANEJAR AQUI ERROR extension tamaño
+        // An error occurred when uploading
+        return
+    }
+   if(!req.file) {
+     // gestionar el error de falta de imagen
+    // console.log(req.body)
+     return
+   }
+    var extension = req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/)[1];
+    interfaceDB.obtenerIdMunicipioNombre(req.body.municipio, function(){
+      interfaceDB.insertarCliente(
+        req.body.name, 
+        interfaceDB.objetoIds.id_municipio,
+        req.body.telefono, 
+        req.body.email, 
+        req.body.web, 
+        function() {
+        interfaceDB.obtenerIdClienteNombre(req.body.name, 
+          function() {
+            interfaceDB.insertarLogo(
+              'uploads/'+req.file.originalname, 
+              req.file.originalname, 
+              extension,
+              req.body.tamnyo_add,
+              interfaceDB.objetoIds.id_cliente, 
+              function(){
+                // console.log("llegue"); // finalizada inserción                  
+              });
+          });
+        });    
+    });
+     
+    var tmp_path = req.file.path; // path temporal del archivo
+    var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
+    var src = fs.createReadStream(tmp_path); // creamos un buffer de lectura del archivo temporal subido
+    var dest = fs.createWriteStream(target_path); // fijamos un archivo de destino
+    src.pipe(dest); // conectamos mediante una tuberia el buffer de entrada con el archivo de destino
+    src.on('end', function() { // terminada lectura del archivo
+      fs.unlink(tmp_path) // borramos temporal
+      // cambiamos el aspect ratio
+      if(req.body.tamnyo_add == '1x1') {
+        putAspectRatioMiniumImageClient(target_path);
+      } else if(req.body.tamnyo_add == '2x4') {
+        putAspectRatioThreeOnepointFive(target_path); 
+      }
+      res.redirect("/config/clientes#insertar");
+    });
+    src.on('error', function(err) {
+      res.render('error' + err);   // Manejar aqui error de escritura 
+    }); 
+  });
+});
+
+
+
+/** BACKEND falta configurar inicio de sesion */
+app.get('/config/clientes', function (req, res) {
+  interfaceDB.resetArrays();
+   var order = req.query.ordenar ? req.query.ordenar : "id_cliente";
+   interfaceDB.crearObjetoMenu(function() {
+      interfaceDB.crearObjetoTodosClientesOrdenado(order, function() {
+        var objectShow = {}
+        objectShow.clients = interfaceDB.arrayClientes;
+        if(req.query.id_cliente) {
+          interfaceDB.arrayClientes.forEach(function(item) {
+            if(item.id_cliente == req.query.id_cliente)
+              objectShow.ClienteModificar = item;
+          });
+        }
+        objectShow.menu = interfaceDB.objetoMenu;
+        res.render('backendClientes', objectShow);
+      });
+    }); // creamos objeto menu
+});
+
+
+
+/** BACKEND falta configurar el inicio de sesion */
 app.get('/config', function (req, res) {
    interfaceDB.crearObjetoMenu(function() {
     var objectShow = {}
@@ -202,17 +277,13 @@ app.get('/config', function (req, res) {
     }); // creamos objeto menu
 });
 
-app.get('/res', function (req, res) {
-  res.render('index', { title: 'Hey', message: 'Hello there!'});
-});
-
+// PORTADA falta definir la estructura para los elementos de portada en la BD y renderizarla con jade
 app.get("/",function(req,res){
     interfaceDB.crearObjetoMenu(function() {
     var objectShow = {}
     objectShow.menu = interfaceDB.objetoMenu;
       res.render('index', objectShow);
     }); // creamos objeto menu
-    // console.log(interfaceDB.objetoMenu);
 });
 
 app.get('/show', function(req, res) {
@@ -220,7 +291,6 @@ app.get('/show', function(req, res) {
   interfaceDB.crearObjetoMenu(function() {
     var objectShow = {}
     objectShow.menu = interfaceDB.objetoMenu;
-    objectShow.municipio = req.query.municipio
     interfaceDB.crearObjetoCuerpoMunicipio(req.query.id, function(){
       interfaceDB.crearobjetoCuerpoNoticias(req.query.id, {action:true}, function(){
         objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
@@ -240,7 +310,6 @@ app.get('/news', function(req, res) {
     objectShow.menu = interfaceDB.objetoMenu;
     objectShow.municipio = req.query.id_municipio
     objectShow.id_noticia = req.query.id_noticia
-    // console.log(objectShow.id_noticia, objectShow.municipio)
     interfaceDB.crearObjetoCuerpoMunicipio(req.query.id_municipio, function(){
       interfaceDB.crearobjetoCuerpoNoticias(req.query.id_municipio, {action:false, id_noticia:objectShow.id_noticia}, function(){
         objectShow.clients2x4 = interfaceDB.arrayClientes2x4;

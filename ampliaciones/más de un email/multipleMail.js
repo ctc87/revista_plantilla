@@ -46,3 +46,55 @@ $(function()
 		return false;
 	});
 });
+
+/* bloque de codigo para el jade */
+
+// .col-sm-8
+//                   label.control-label(for='fields') Mails(Max:2)
+//                     #fields.control-group
+//                       .controls
+//                         .grow
+//                           .entry.input-group
+//                             input.exampleInputEmail1.form-control(value="g@g" name='mails[]', type='email', placeholder='Mail', aria-describedby="emailHelp")
+//                             span.input-group-btn
+//                               button.btn.btn-success.btn-add-mail.btn-lg(type='button')
+//                                 span.glyphicon.glyphicon-plus
+
+
+/** sql **/
+
+// -- create table telefonos (
+// --     telefono varchar(20),
+// --     id_cliente MEDIUMINT NOT NULL,
+// --     PRIMARY KEY (telefono),
+// --     FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+// -- );
+
+// -- create table emails(
+// --     mail VARCHAR(200),
+// --     id_cliente MEDIUMINT NOT NULL,
+// --     PRIMARY KEY (mail),
+// --     FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+// -- );
+
+/** nodejs */
+
+  
+  
+  //   var crearArrayMails = function(_id_cliente, completed, callback) {
+  //   var arrayMails = [];
+  //   var queryMails = 'Select mail from emails where id_cliente = ' + _id_cliente;
+  //   interfaceDB.connection.query(queryMails, function(err, mails, fields) {
+  //     if (!err) {
+  //       for(var j = 0; j < mails.length; j++) {
+  //         arrayMails.push(mails[j].mail)
+  //       }
+  //       if(completed) {
+  //         callback();
+  //       }
+  //     } else {
+  //       console.log('Error en la obtención de los emails.');
+  //     }
+  //   });
+  //   return arrayMails;
+  // }

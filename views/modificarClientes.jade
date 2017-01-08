@@ -1,0 +1,58 @@
+mixin cliente(clientes, index)
+    // button.btn.btn-primary(data-toggle='modal', data-target='#mod-#{id_cliente}') Large modal
+    .modal.fade(style="top:45%" id='mod-#{clientes[index].id_cliente}' tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+      .modal-dialog.modal-lg
+        .modal-content #{clientes[index].web} 
+    
+    tr
+        td #{clientes[index].id_cliente}
+        td #{clientes[index].nombre}
+        td #{clientes[index].id_municipio}
+        td #{clientes[index].mail}
+        td #{clientes[index].telefono}
+        td
+            button.btn.btn-success(type='button', aria-label='Left Align' data-toggle='modal', data-target='#mod-#{clientes[index].id_cliente}')
+                span.glyphicon.glyphicon-globe(aria-hidden='true')
+        td 
+            button.btn.btn-info(type='button', aria-label='Left Align' onmouseover="document.getElementById('#{clientes[index].id_cliente}').style.display='block';", onmouseout="document.getElementById('#{clientes[index].id_cliente}').style.display='none';") 
+                span.glyphicon.glyphicon-play-circle(aria-hidden='true')
+            img.thubnail-sup(id="#{clientes[index].id_cliente}" style='display:none', src='/#{clientes[index].logo}' alt='#{clientes[index].logo}')
+                
+                
+        td #{clientes[index].formato}
+        
+        td 
+            a(href="/config/clientes?id_cliente=#{clientes[index].id_cliente}#insertar")
+                button.btn.btn-warning(type='button', aria-label='Left Align')
+                    span.glyphicon.glyphicon-pencil(aria-hidden='true')
+        td 
+            button.btn.btn-danger(type='button', aria-label='Left Align')
+                span.glyphicon.glyphicon-trash(aria-hidden='true')
+
+
+.container.white-transparent.text-center
+  h2 Modificar Clientes
+  table.table.table-striped
+    thead
+      tr
+        th  
+         a(href="/config/clientes?ordenar=id_cliente#modificar") id_cliente
+        th  
+         a(href="/config/clientes?ordenar=nombre#modificar")  Nombre
+        th  
+         a(href="/config/clientes?ordenar=nombre_municipio#modificar")  Municipio
+        th   
+         a(href="/config/clientes?ordenar=mail#modificar") Mails
+        th  
+         a(href="/config/clientes?ordenar=telefono#modificar") Telefonos
+        th Web
+        th Logo
+        th  
+         a(href="/config/clientes?ordenar=tamanyo_formato#modificar") Anuncio
+        th Modificar
+        th Borrar
+    tbody
+        each client, index in clients
+            +cliente(clients, index)
+br
+br

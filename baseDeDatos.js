@@ -7,12 +7,14 @@
     id_noticia: ""
   }
   
+  interfaceDB.arrayClientes = [];
   interfaceDB.arrayClientes2x4 = [];
   interfaceDB.arrayClientes1x2 = [];
   interfaceDB.arrayClientes1x1 = [];
   interfaceDB.arrayNoticias = [];
   
   interfaceDB.resetArrays = function() {
+    interfaceDB.arrayClientes = [];
     interfaceDB.arrayClientes2x4 = [];
     interfaceDB.arrayClientes1x2 = [];
     interfaceDB.arrayClientes1x1 = [];
@@ -67,6 +69,8 @@
       }
     });
   }
+  
+    
   
    /**
    * Crea un array con los municipios de la zona pasada por parámetro
@@ -134,19 +138,56 @@
     });
   }
   
+    interfaceDB.crearObjetoTodosClientesOrdenado = function(_order, callback) {
+    var i = 0;
+    var query = 'Select clientes.id_cliente, municipios.nombre_municipio, clientes.nombre, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato ' +
+    'From `clientes` inner join logos on ' +  
+    'clientes.id_cliente = logos.id_cliente ' +
+    'inner join `municipios` on clientes.id_municipio = municipios.id_municipio ' +
+    'ORDER BY ' + _order + ';';
+     interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(rows.length < 1) {
+          callback();
+        }
+        for(var key in rows) {
+          i++;
+          interfaceDB.arrayClientes.push({
+            id_cliente: rows[key].id_cliente,
+            id_municipio: rows[key].nombre_municipio,
+            nombre: rows[key].nombre,
+            logo: rows[key].ruta,
+            formato: rows[key].tamanyo_formato,
+            mail: rows[key].mail,
+            telefono: rows[key].telefono,
+            web: rows[key].web
+          });
+          if(!(i<rows.length)) {
+            callback();
+          }
+        
+        }
+
+      } else {
+        console.log('Error en la consulta de clientes para su listado en backend.');
+      }
+    });
+    
+  }
+  
+  
   interfaceDB.crearObjetoCuerpoMunicipio = function(_id_municipio, callback) {
     var completed = false;
     var i = 0;
-    var query = 'Select clientes.id_cliente, clientes.nombre, logos.ruta, logos.tamanyo_formato From `clientes` inner join logos on ' +  
+    var query = 'Select clientes.id_cliente, clientes.nombre, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato From `clientes` inner join logos on ' +  
     'clientes.id_cliente = logos.id_cliente ' +
     'where id_municipio = ' + _id_municipio + ';';
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
+        if(rows.length < 1) {
+          callback();
+        }
         for(var key in rows) {
-          i++;
-          if(!(i<rows.length)) {
-            completed = true;
-          }
         var arrayAux = [];
         
         if(rows[key].tamanyo_formato == "2x4")
@@ -155,14 +196,18 @@
           arrayAux = interfaceDB.arrayClientes1x2;
         else if(rows[key].tamanyo_formato == "1x1")
           arrayAux = interfaceDB.arrayClientes1x1;
-        
         arrayAux.push({
           id_cliente: rows[key].id_cliente,
           nombre: rows[key].nombre,
           logo: rows[key].ruta,
-          emails:crearArrayMails(rows[key].id_cliente, completed, callback),
-          telefonos:['605678678', '689907654']
+          mail: rows[key].mail,
+          telefono: rows[key].telefono,
+          web: rows[key].web
         });
+          i++;
+          if(!(i<rows.length)) {
+            callback();
+          }
         }
 
       } else {
@@ -171,26 +216,7 @@
     });
     
   }
-  
-  
-    var crearArrayMails = function(_id_cliente, completed, callback) {
-    var arrayMails = [];
-    var queryMails = 'Select mail from emails where id_cliente = ' + _id_cliente;
-    interfaceDB.connection.query(queryMails, function(err, mails, fields) {
-      if (!err) {
-        for(var j = 0; j < mails.length; j++) {
-          arrayMails.push(mails[j].mail)
-        }
-        if(completed) {
-          callback();
-          console.log('completed'); 
-        }
-      } else {
-        console.log('Error en la obtención de los emails.');
-      }
-    });
-    return arrayMails;
-  }
+
   
   interfaceDB.crearObjetoCuerpoZona = function(_id_zona, callback) {
   }
@@ -213,10 +239,14 @@
   }
   
   
-  interfaceDB.insertarCliente  = function(_nombre, _municipio, callback) {
-    var query = 'INSERT INTO `clientes` (`nombre`, `id_municipio`) ' +  
-      'VALUES ("' + _nombre + '",  ' + _municipio + ');';
-    
+  interfaceDB.insertarCliente  = function(_nombre, _municipio, _telefono, _mail, _web, callback) {
+    var query = 'INSERT INTO `clientes` (`nombre`, `id_municipio`, `telefono`, `mail`, `web`) ' +  
+      'VALUES ("'  + _nombre + 
+              '",' + _municipio + 
+              ',' + _telefono + 
+              ',"' + _mail + 
+              '","' + _web + '");';
+    console.log(query)
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         callback();
@@ -280,8 +310,7 @@
       }
     });
   }
-  
-  
+
   
   interfaceDB.obtenerIdMunicipioNombre = function(_nombre, callback) {
     var query = 'Select id_municipio From `municipios` where nombre_municipio = "' + _nombre + '";';
@@ -295,6 +324,7 @@
       }
     });
   };
+   
   
   return interfaceDB;
 })(typeof exports === "undefined" ? interfaceDB = {} : exports);
