@@ -8,7 +8,8 @@
               .col-sm-8
                 h1.center-block Modificar Cliente
             br
-            form(role='form', autocomplete='off', enctype='multipart/form-data', action='/modificarClientes', method='post')
+            form(role='form', autocomplete='off', enctype='multipart/form-data', action='/config/modificarCliente', method='post')
+             input(type="hidden" value="#{ClienteModificar.id_cliente}" name="id_cliente")
              .col-sm-12
                  .col-sm-2
                  .form-group.col-sm-8

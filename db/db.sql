@@ -38,7 +38,6 @@ create table clientes (
 create table logos(
     id_logo MEDIUMINT NOT NULL AUTO_INCREMENT,
     ruta VARCHAR(500),
-    ruta_original VARCHAR(500),
     nombre_archivo VARCHAR(200),
     extension VARCHAR(10),
     tamanyo_formato VARCHAR(10),
@@ -53,7 +52,7 @@ create table noticias(
     fuente_nombre VARCHAR(500),
     fuente_enclace varchar(500),
     titular VARCHAR(100),
-    contenido VARCHAR(5000),
+    contenido VARCHAR(11000),
     ruta_foto VARCHAR(100),
     id_municipio MEDIUMINT NOT NULL,
     PRIMARY KEY (id_noticia),

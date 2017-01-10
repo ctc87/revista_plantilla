@@ -38,10 +38,11 @@ header
                i.fa.fa-arrow-circle-o-down
              .dropdown-menu
                .dropdown-inner
-                  ul.list-unstyled
-                    each municipio, i in item.municipios
-                      li
-                        a(href='./show?id=#{municipio.id}&municipio=#{municipio.nombre}') #{municipio.nombre}
+                  each arrayMun, i in item.municipios
+                    ul.list-unstyled
+                      each municipio, j in arrayMun
+                        li
+                          a(href='./show?id=#{municipio.id}&municipio=#{municipio.nombre}') #{municipio.nombre}
                           
                        
         li

@@ -50,7 +50,7 @@
   /** RECUPERACIÓN DE DATOS ZONAS  
    *  Crea un objeto para los menus para recorrelo desde la vista con JADE 
    */
-  interfaceDB.crearObjetoMenu = function(callback) {
+  interfaceDB.crearObjetoMenu = function(_agrupado, callback) {
   interfaceDB.objetoMenu = {"arrayMenu":[]};
   var completed = false;
   var i = 0;
@@ -66,13 +66,47 @@
             "municipios":[]
           };
           subObjetoMenu.zona = rows[key].nombre_zona;
-          subObjetoMenu.municipios = crearArrayMunicipios(rows[key].id_zona, callback, completed);
+          if(_agrupado)
+            subObjetoMenu.municipios = crearArrayMunicipiosMenu(rows[key].id_zona, callback, completed);
+          else
+            subObjetoMenu.municipios = crearArrayMunicipios(rows[key].id_zona, callback, completed);
           interfaceDB.objetoMenu.arrayMenu.push(subObjetoMenu);
         } 
       } else {
         console.log('Error en la consulta de zonas.');
       }
     });
+  }
+  
+  /** RECUPERACIÓN DE DATOS MUNICIPIOS  
+   * Crea un array con los municipios de la zona pasada por parámetro agrupados de 5 en 5
+   */    
+  var crearArrayMunicipiosMenu = function(id_zona, callback, completed) {
+    var arrayOfArrays = [];
+    var query = 'SELECT * from municipios where id_zona = ' + id_zona + ';';
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      // connection.end();
+      if (!err) {
+        var i = 0;
+        var arrayMunicipios = [];
+        for (var key in rows) {
+          var municipio = {};
+          municipio.nombre = rows[key].nombre_municipio
+          municipio.id = rows[key].id_municipio
+          arrayMunicipios.push(municipio);
+          i++;
+          if(i % 5 == 0 || i == rows.length) {
+            arrayOfArrays.push(arrayMunicipios);
+            arrayMunicipios = [];
+          }
+        } 
+        if(completed)
+          callback();
+      } else {
+        console.log('Error en la consulta de municipios.');
+      }
+    });
+    return arrayOfArrays;
   }
   
   /** RECUPERACIÓN DE DATOS MUNICIPIOS  
@@ -97,8 +131,7 @@
       }
     });
     return arrayMunicipios;
-  }
-  
+  } 
   /** Resumir una noticias   
    * Resume una noticia para moestrar solo su resumen en JADE.
    */   
@@ -119,6 +152,9 @@
     var i = 0;
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
+        if(rows.length < 1) {
+          callback();
+        }
         for(var key in rows) {
           i++;
           if(!(i<rows.length)) {
@@ -145,6 +181,43 @@
           callback();
       } else {
         console.log('Error en la consulta de noticias.');
+      }
+    });
+  }
+  
+  /** RECUPERACIÓN DE DATOS NOTICIAS  
+   * Crea un objeto con todas las noticias
+   */    
+  interfaceDB.crearObjetoTodasNoticias = function(_order, callback) {
+  var query = 'Select * FROM `noticias` inner join `municipios` on noticias.id_municipio = municipios.id_municipio ' +  
+    'ORDER BY ' + _order + ';';
+    var completed = false;
+    var i = 0;
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(rows.length < 1) {
+          callback();
+        }
+        for(var key in rows) {
+          i++;
+          if(!(i<rows.length)) {
+            completed = true;
+          }
+          interfaceDB.arrayNoticias.push({
+            id_noticia: rows[key].id_noticia,
+            id_municipio: rows[key].nombre_municipio,
+            titular: rows[key].titular,
+            fecha: rows[key].fecha,
+            imagen: rows[key].ruta_foto,
+            fuente_enclace: rows[key].fuente_enclace,
+            fuente_nombre: rows[key].fuente_nombre,
+            contenido: rows[key].contenido
+          });
+        } 
+        if(completed)
+          callback();
+      } else {
+        console.log('Error en la consulta de todas noticias.');
       }
     });
   }
@@ -247,7 +320,6 @@
     
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
-        console.log("idecliente:  ",  rows)
         interfaceDB.objetoIds.id_cliente = rows[0].id_cliente;
         callback();
       } else {
@@ -263,7 +335,6 @@
     var query = 'Select id_municipio From `municipios` where nombre_municipio = "' + _nombre + '";';
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
-        // console.log(rows[0].id_municipio);
         interfaceDB.objetoIds.id_municipio = rows[0].id_municipio;
         callback();
       } else {
@@ -334,6 +405,121 @@
           callback();
       } else {
         console.log('Error en la insercion del logo.');
+      }
+    });
+  }
+  
+/*******************MODIFICACIÓN DE DATOS*******************/
+  /** MODICACIÓN DE DATOS CLIENTE  
+   *  Modifica información de un cliente pasado como id
+   */ 
+  interfaceDB.modificarCliente  = function(_id_cliente, _nombre, _municipio, _telefono, _mail, _web, callback) {
+     var query = 'UPDATE `clientes` SET ' +  
+      'nombre = "'  + _nombre + 
+      '", id_municipio = ' + _municipio + 
+      ', telefono = ' + _telefono + 
+      ', mail = "' + _mail + 
+      '", web = "' + _web + 
+      '" WHERE id_cliente = ' +  _id_cliente   + ';';
+      
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        callback();
+      } else {
+        console.log('Error en la modificación del cliente.');
+      }
+    });
+  }
+  
+  /** MODICACIÓN DE DATOS LOGOS  
+   *  modifica la información del logo de un cliente pasado como id
+   */    
+  interfaceDB.modificarLogo = function(_ruta, _nombre_archivo, _extension, _tamanyo_formato, _id_cliente, callback) {
+    var query = 'UPDATE `logos` SET ' +
+        'ruta = "' + _ruta + 
+        '" , nombre_archivo = "' + _nombre_archivo +
+        '" , extension = "' + _extension + 
+        '" , tamanyo_formato = "' + _tamanyo_formato + 
+        '" WHERE id_cliente = ' + _id_cliente + ' ;';
+        
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la modificación del logo.');
+      }
+    });
+  }  
+  
+  /** MODICACIÓN DE DATOS LOGOS  
+   *  modifica la el tamaño del formato del logo de un cliente pasado como id
+   */    
+  interfaceDB.modificarTamanyoLogo = function(_tamanyo_formato, _id_cliente, callback) {
+    var query = 'UPDATE `logos` SET ' +
+        ' tamanyo_formato = "' + _tamanyo_formato + 
+        '" WHERE id_cliente = ' + _id_cliente + ' ;';
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la modificación del tamaño del formato del logo.');
+      }
+    });
+  }
+  
+  /** MODIFICAR DE DATOS NOTICIAS  
+   *  Modifica una noticia pasada como id
+   */    
+  interfaceDB.modificarNoticia = function(_id_noticia, _titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, callback) {
+    var query = 'UPDATE `noticias` SET ' +
+      ' fecha = "' + _fecha + 
+        '" , fuente_nombre = "' + _nombreFuente +
+        '" , fuente_enclace = "' + _enlaceFuente + 
+        '" , titular = "' + _titular + 
+        '" , contenido = \'' + _contenido + 
+        '\' , ruta_foto = "' + _imagen + 
+        '" , id_municipio = ' + _municipio + 
+        ' WHERE id_noticia =  ' + _id_noticia + ';'; 
+        
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la modificación de la noticia.');
+      }
+    });
+  }
+  
+/*******************ELIMINACIÓN DE DATOS*******************/
+  /** ELIMINACIÓN DE DATOS CLIENTE  
+   *  Elimina toda información de un cliente pasado como id
+   */ 
+  interfaceDB.eliminarCliente = function(_id_cliente, callback) {
+    var query = 'DELETE FROM `clientes` WHERE id_cliente = ' + _id_cliente + ' ;';
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la eliminación del cliente.');
+      }
+    });
+  }
+  
+  /** ELIMINACIÓN DE DATOS LOGO  
+   *  Elimina toda información del logo de un cliente pasado como id
+   */ 
+  interfaceDB.eliminarLogo = function(_id_cliente, callback) {
+    var query = 'DELETE FROM `logos` WHERE id_cliente = ' + _id_cliente + ' ;';
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la eliminación del logo.');
       }
     });
   }

@@ -3,7 +3,38 @@ mixin cliente(clientes, index)
     .modal.fade(style="top:45%" id='mod-#{clientes[index].id_cliente}' tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
       .modal-dialog.modal-lg
         .modal-content #{clientes[index].web} 
-    
+    .modal.fade(id="mod-del-#{clientes[index].id_cliente}" tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal')
+              span(aria-hidden='true') ×
+              span.sr-only Close
+            h4#frm_title.modal-title BORRAR UN CLIENTE
+          #frm_body.modal-body
+            p ¿Desea Borrar? 
+            p 
+                b Nombre cliente: 
+                | #{clientes[index].nombre}
+            p 
+                b id: 
+                | #{clientes[index].id_cliente}
+            p 
+                b Municipio: 
+                | #{clientes[index].id_municipio}
+            p 
+                b email: 
+                | #{clientes[index].mail}
+            p 
+                b teléfono: 
+                | #{clientes[index].telefono}
+            p 
+                b formato imagen: 
+                | #{clientes[index].formato}
+          .modal-footer
+            a(href='/config/borrarCliente?id_cliente=#{clientes[index].id_cliente}&img=#{clientes[index].logo}')
+                button#frm_submit.btn.btn-primary.col-sm-2.pull-right(style='margin-left:10px;', type='button') Si
+            button#frm_cancel.btn.btn-danger.col-sm-2.pull-right(type='button', data-dismiss='modal') No    
     tr
         td #{clientes[index].id_cliente}
         td #{clientes[index].nombre}
@@ -15,7 +46,7 @@ mixin cliente(clientes, index)
                 span.glyphicon.glyphicon-globe(aria-hidden='true')
         td 
             button.btn.btn-info(type='button', aria-label='Left Align' onmouseover="document.getElementById('#{clientes[index].id_cliente}').style.display='block';", onmouseout="document.getElementById('#{clientes[index].id_cliente}').style.display='none';") 
-                span.glyphicon.glyphicon-play-circle(aria-hidden='true')
+                span.glyphicon.glyphicon-picture(aria-hidden='true')
             img.thubnail-sup(id="#{clientes[index].id_cliente}" style='display:none', src='/#{clientes[index].logo}' alt='#{clientes[index].logo}')
                 
                 
@@ -26,9 +57,8 @@ mixin cliente(clientes, index)
                 button.btn.btn-warning(type='button', aria-label='Left Align')
                     span.glyphicon.glyphicon-pencil(aria-hidden='true')
         td 
-            button.btn.btn-danger(type='button', aria-label='Left Align')
+            button.btn.btn-danger(type='button', aria-label='Left Align' data-toggle='modal', data-target='#mod-del-#{clientes[index].id_cliente}')
                 span.glyphicon.glyphicon-trash(aria-hidden='true')
-
 
 .container.white-transparent.text-center
   h2 Modificar Clientes
@@ -42,9 +72,9 @@ mixin cliente(clientes, index)
         th  
          a(href="/config/clientes?ordenar=nombre_municipio#modificar")  Municipio
         th   
-         a(href="/config/clientes?ordenar=mail#modificar") Mails
+         a(href="/config/clientes?ordenar=mail#modificar") Mail
         th  
-         a(href="/config/clientes?ordenar=telefono#modificar") Telefonos
+         a(href="/config/clientes?ordenar=telefono#modificar") Telefono
         th Web
         th Logo
         th  
