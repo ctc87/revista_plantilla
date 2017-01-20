@@ -478,11 +478,11 @@
         '" , fuente_nombre = "' + _nombreFuente +
         '" , fuente_enclace = "' + _enlaceFuente + 
         '" , titular = "' + _titular + 
-        '" , contenido = \'' + _contenido + 
+        '" , contenido = \'' +  _contenido +
         '\' , ruta_foto = "' + _imagen + 
         '" , id_municipio = ' + _municipio + 
         ' WHERE id_noticia =  ' + _id_noticia + ';'; 
-        
+    // console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(callback)
@@ -520,6 +520,21 @@
           callback();
       } else {
         console.log('Error en la eliminación del logo.');
+      }
+    });
+  }
+  
+  /** ELIMINACIÓN DE DATOS NOTICA  
+   *  Elimina toda información del logo de un cliente pasado como id
+   */ 
+  interfaceDB.eliminarNoticia = function(_id_noticia, callback) {
+    var query = 'DELETE FROM `noticias` WHERE id_noticia = ' + _id_noticia + ' ;';
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la eliminación de la noticia.');
       }
     });
   }

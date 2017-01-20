@@ -41,16 +41,14 @@ mixin cliente(clientes, index)
         td #{clientes[index].id_municipio}
         td #{clientes[index].mail}
         td #{clientes[index].telefono}
-        td
-            button.btn.btn-success(type='button', aria-label='Left Align' data-toggle='modal', data-target='#mod-#{clientes[index].id_cliente}')
-                span.glyphicon.glyphicon-globe(aria-hidden='true')
+        td #{clientes[index].formato}
         td 
             button.btn.btn-info(type='button', aria-label='Left Align' onmouseover="document.getElementById('#{clientes[index].id_cliente}').style.display='block';", onmouseout="document.getElementById('#{clientes[index].id_cliente}').style.display='none';") 
                 span.glyphicon.glyphicon-picture(aria-hidden='true')
             img.thubnail-sup(id="#{clientes[index].id_cliente}" style='display:none', src='/#{clientes[index].logo}' alt='#{clientes[index].logo}')
-                
-                
-        td #{clientes[index].formato}
+        td
+            button.btn.btn-success(type='button', aria-label='Left Align' data-toggle='modal', data-target='#mod-#{clientes[index].id_cliente}')
+                span.glyphicon.glyphicon-globe(aria-hidden='true')
         
         td 
             a(href="/config/clientes?id_cliente=#{clientes[index].id_cliente}#insertar")
@@ -75,11 +73,11 @@ mixin cliente(clientes, index)
          a(href="/config/clientes?ordenar=mail#modificar") Mail
         th  
          a(href="/config/clientes?ordenar=telefono#modificar") Telefono
-        th Web
-        th Logo
         th  
          a(href="/config/clientes?ordenar=tamanyo_formato#modificar") Anuncio
-        th Modificar
+        th Logo
+        th Web
+        th Mod
         th Borrar
     tbody
         each client, index in clients

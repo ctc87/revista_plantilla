@@ -8,38 +8,32 @@ mixin noticia(noticias, index)
         .modal-content(style="padding:10%") 
             h5 Contenido
             | !{noticias[index].contenido}         
-    // .modal.fade(id="mod-del-#{clientes[index].id_cliente}" tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-    //   .modal-dialog
-    //     .modal-content
-    //       .modal-header
-    //         button.close(type='button', data-dismiss='modal')
-    //           span(aria-hidden='true') ×
-    //           span.sr-only Close
-    //         h4#frm_title.modal-title BORRAR UN CLIENTE
-    //       #frm_body.modal-body
-    //         p ¿Desea Borrar? 
-    //         p 
-    //             b Nombre cliente: 
-    //             | #{clientes[index].nombre}
-    //         p 
-    //             b id: 
-    //             | #{clientes[index].id_cliente}
-    //         p 
-    //             b Municipio: 
-    //             | #{clientes[index].id_municipio}
-    //         p 
-    //             b email: 
-    //             | #{clientes[index].mail}
-    //         p 
-    //             b teléfono: 
-    //             | #{clientes[index].telefono}
-    //         p 
-    //             b formato imagen: 
-    //             | #{clientes[index].formato}
-    //       .modal-footer
-    //         a(href='/config/borrarCliente?id_cliente=#{clientes[index].id_cliente}&img=#{clientes[index].logo}')
-    //             button#frm_submit.btn.btn-primary.col-sm-2.pull-right(style='margin-left:10px;', type='button') Si
-    //         button#frm_cancel.btn.btn-danger.col-sm-2.pull-right(type='button', data-dismiss='modal') No    
+    .modal.fade(id="mod-del-#{noticias[index].id_noticia}" tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal')
+              span(aria-hidden='true') ×
+              span.sr-only Close
+            h4#frm_title.modal-title BORRAR UNA NOTICIA
+          #frm_body.modal-body
+            p ¿Desea Borrar? 
+            p 
+                b Titualar noticia: 
+                | #{noticias[index].titular}
+            p 
+                b id: 
+                | #{noticias[index].id_noticia}
+            p 
+                b Municipio: 
+                | #{noticias[index].id_municipio}
+            p 
+                b Fuente: 
+                | #{noticias[index].fuente_nombre}
+          .modal-footer
+            a(href='/config/borrarNoticia?id_noticia=#{noticias[index].id_noticia}&img=#{noticias[index].imagen}')
+                button#frm_submit.btn.btn-primary.col-sm-2.pull-right(style='margin-left:10px;', type='button') Si
+            button#frm_cancel.btn.btn-danger.col-sm-2.pull-right(type='button', data-dismiss='modal') No    
     tr
         td #{noticias[index].id_noticia}
         td #{noticias[index].fecha}
@@ -81,10 +75,10 @@ mixin noticia(noticias, index)
          a(href="/config/noticias?ordenar=nombre_municipio#modificar")  Municipio
         th   
          a(href="/config/noticias?ordenar=fuente_nombre#modificar") Nombre fuente
-        th Imagen
-        th Enlace fuente
-        th Contenido
-        th Modificar
+        th Img
+        th Link
+        th Cont
+        th Mod
         th Borrar
     tbody
         each noticia, index in noticias

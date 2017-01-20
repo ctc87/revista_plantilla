@@ -36,7 +36,7 @@ app.post('/uploadNoticiaImage', function(req, res) {
           console.log("insertada noticia");
         });
     });
-    interfaceIMG.guardarImagen(req.file.path, target_path, interfaceIMG.putAspectRatioThreeOnepointFive,
+    interfaceIMG.guardarImagen(false, req.file.path, target_path, interfaceIMG.putAspectRatioThreeOnepointFive,
     function(){
         res.redirect("/config/noticias#insertar");
     },
@@ -89,7 +89,7 @@ app.post('/uploadUserImage', function (req, res) {
       funcionAspectRatio = interfaceIMG.putAspectRatioThreeOnepointFive; 
     }
     var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
-    interfaceIMG.guardarImagen(req.file.path, target_path, funcionAspectRatio,
+    interfaceIMG.guardarImagen(true, req.file.path, target_path, funcionAspectRatio,
     function(){
       res.redirect("/config/clientes#insertar");
     },
@@ -136,7 +136,7 @@ app.post('/config/modificarCliente', function (req, res) {
                     // console.log("llegue"); // finalizada inserción                  
                   });
                   var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
-                  interfaceIMG.guardarImagen(req.file.path, target_path, funcionAspectRatio,
+                  interfaceIMG.guardarImagen(true, req.file.path, target_path, funcionAspectRatio,
                   function(){
                     res.redirect("/config/clientes#insertar");
                   },
@@ -170,12 +170,16 @@ app.post('/config/modificarNoticia', function (req, res) {
     var target_path;
     if(req.file) {
       target_path = './uploads/noticias/' + req.file.originalname; // nombre original del archivo
+      interfaceIMG.guardarImagen(false, req.file.path, target_path, interfaceIMG.putAspectRatioThreeOnepointFive,
+        function(){}, function(){
+          res.render('error' + err);   // Manejar aqui error de escritura 
+      });
     } else {
       target_path = req.body.old_logo;
     }
-    /*** MODIFICAR LA PARTE DE LA IMAGEN Y LA MODIFICACIÖN */
     interfaceDB.obtenerIdMunicipioNombre(req.body.municipio, function(){
       interfaceDB.modificarNoticia(
+        req.body.id_noticia,
         req.body.titular, 
         req.body.contenido, 
         target_path, 
@@ -184,36 +188,7 @@ app.post('/config/modificarNoticia', function (req, res) {
         req.body.fecha, 
         interfaceDB.objetoIds.id_municipio, 
         function(){
-          if(req.file) {
-            interfaceDB.obtenerIdClienteNombre(req.body.name, 
-              function() {
-                interfaceDB.modificarLogo(
-                  'uploads/'+req.file.originalname, 
-                  req.file.originalname, 
-                  req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/)[1],
-                  req.body.tamnyo_add,
-                  interfaceDB.objetoIds.id_cliente, 
-                  function(){
-                    // console.log("llegue"); // finalizada inserción                  
-                  });
-                  var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
-                  interfaceIMG.guardarImagen(req.file.path, target_path, interfaceIMG.putAspectRatioThreeOnepointFive,
-                  function(){
-                    res.redirect("/config/noticas#insertar");
-                  },
-                  function(){
-                    res.render('error' + err);   // Manejar aqui error de escritura 
-                  });
-              });
-          } else {
-            var originalImage = req.body.old_logo.replace("uploads/", "uploads/originalImages/");
-            interfaceDB.modificarTamanyoLogo(req.body.tamnyo_add, req.body.id_cliente, function(){
-              interfaceIMG.putAspectRatioThreeOnepointFive('' + originalImage, '' + req.body.old_logo);
-              res.redirect("/config/noticias#modificar");
-            });
-            // gestionar el error de falta de imagen
-            // console.log(req.body)
-          }
+          res.redirect("/config/noticias#modificar");
         });  
     });
   });
@@ -227,6 +202,13 @@ app.get('/config/borrarCliente', function (req, res) {
       res.redirect("/config/clientes#modificar");
     });
   }); 
+});
+
+app.get('/config/borrarNoticia', function (req, res) {
+  interfaceDB.eliminarNoticia(req.query.id_noticia, function(){
+    interfaceIMG.borrarImagen(req.query.img);
+    res.redirect("/config/noticias#modificar");
+  });
 });
 
 /** BACKEND falta configurar inicio de sesion */

@@ -12,8 +12,6 @@ html
             a(data-toggle='tab', href='#insertar') Insertar Cliente
           li#li-modificar.li-tab
             a(data-toggle='tab', href='#modificar') Modificar Cliente
-          li#li-menu2.li-tab
-            a(data-toggle='tab', href='#menu2') Otros
         .tab-content
           #insertar.tab-pane.active
             if(ClienteModificar)
@@ -22,6 +20,4 @@ html
               include formClient
           #modificar.tab-pane.fade
             include modificarClientes
-          #menu2.tab-pane.fade
-            h3 Menu 2
-            p Some content in menu 2.
+

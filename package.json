@@ -1,9 +1,13 @@
 {
   "name": "revista",
-  "version": "0.0.0",
-  "description": "Test mysql nodejs",
+  "version": "1.2.1",
+  "description": "Periodico online",
   "main": "server.js",
-  "repository": "",
+  "repository" :
+    { 
+      "type" : "git",
+      "url" : "https://github.com/ctc87/revista_plantilla"
+    }
   "author": "Carlos Troyano Carmona <carlos.troyano.carmona@gmail.com>",
   "dependencies": {
     "busboy": "^0.2.13",

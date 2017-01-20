@@ -58,18 +58,24 @@
         }); 
     }
     
-    interfaceIMG.guardarImagen = function(_tmp_path, _target_path, aspectRatioFunction, callback, errorCallback) {
+    interfaceIMG.guardarImagen = function(_original, _tmp_path, _target_path, aspectRatioFunction, callback, errorCallback) {
         var src = fs.createReadStream(_tmp_path); // creamos un buffer de lectura del archivo temporal subido
         var dest = fs.createWriteStream(_target_path); // fijamos un archivo de destino
         src.pipe(dest); // conectamos mediante una tuberia el buffer de entrada con el archivo de destino
         src.on('end', function() { // terminada lectura del archivo
-            interfaceIMG.guardarImagenOriginal(_tmp_path, _target_path, function(){
-                fs.unlink(_tmp_path); // borramos temporal
-                aspectRatioFunction(_target_path, _target_path);
-                callback(); 
-            } , function() {
-                errorCallback();
-            });
+            if(_original) {
+              interfaceIMG.guardarImagenOriginal(_tmp_path, _target_path, function(){
+                  fs.unlink(_tmp_path); // borramos temporal
+                  aspectRatioFunction(_target_path, _target_path);
+                  callback(); 
+              } , function() {
+                  errorCallback();
+              });
+            } else {
+              fs.unlink(_tmp_path); // borramos temporal
+              aspectRatioFunction(_target_path, _target_path);
+              callback();
+            }
         });
         src.on('error', function(err) {
             errorCallback();
