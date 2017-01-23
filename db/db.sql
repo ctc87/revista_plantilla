@@ -58,3 +58,11 @@ create table noticias(
     PRIMARY KEY (id_noticia),
     FOREIGN KEY (id_municipio) REFERENCES municipios(id_municipio)
 );
+
+
+create table users (
+    id int primary key,
+    nickname varchar(200) unique not null,
+    email varchar(200) unique not null,
+    password varchar(200) not null
+);
