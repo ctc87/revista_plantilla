@@ -30,9 +30,9 @@
   interfaceDB.objetoMenu = {"arrayMenu":[]};
   interfaceDB.connection = mysql.createConnection({
     host     : 'localhost',
-    user     : 'ctc87',
-    password : '',
-    database : 'revista'
+    user     : 'tuperiod_revista',
+    password : 'Dbz111187?',
+    database : 'tuperiod_revista'
   });
 
 /** CONEXION A LA BASE DE DATOS */
