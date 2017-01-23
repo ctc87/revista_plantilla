@@ -7,7 +7,7 @@
     { 
       "type" : "git",
       "url" : "https://github.com/ctc87/revista_plantilla"
-    }
+    },
   "author": "Carlos Troyano Carmona <carlos.troyano.carmona@gmail.com>",
   "dependencies": {
     "busboy": "^0.2.13",
