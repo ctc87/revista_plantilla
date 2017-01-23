@@ -1,16 +1,55 @@
 var express    = require("express");
 var interfaceDB = require('./baseDeDatos'); // gestión de la base de datos
 var interfaceIMG = require('./imagenes'); // gestión de las imagenes
-  
+var interfaceUSR = require('./loginUsers'); // gestión de los usuarios y login
+var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 var app = express();
+
+app.use(express.cookieParser());
+app.use(express.session({
+  secret: 'shhhhhhhhh',
+  resave: true,
+  saveUninitialized: true
+}));
+
+app.use(interfaceUSR.passport.initialize());
+app.use(interfaceUSR.passport.session());
 
 app.set('views', './views'); // carpeta de vistas
 app.set('view engine', 'jade'); // libreria utilizada para las vistas
 app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
 
+    
+
+
+
+// Render the login template
+app.get('/login',
+  function(req, res){
+    res.render('login', { env: process.env });
+  });
+
+// // Perform session logout and redirect to homepage
+// app.get('/logout', function(req, res){
+//   req.logout();
+//   res.redirect('/');
+// });
+
+// Perform the final stage of authentication and redirect to '/user'
+app.get('/callback',
+  interfaceUSR.passport.authenticate('auth0', { failureRedirect: '/fail' }),
+  function(req, res) {
+    res.redirect(req.session.returnTo || '/config');
+  });
+
+
+
+
+
+
 // formulario de inserción de noticia con imagen
-app.post('/uploadNoticiaImage', function(req, res) {
+app.post('/uploadNoticiaImage', ensureLoggedIn, function(req, res, next) {
   interfaceIMG.upload(req, res, function (err) {
     if (err) {
         console.log("error" , err)
@@ -46,7 +85,7 @@ app.post('/uploadNoticiaImage', function(req, res) {
   });
 });
 
-app.post('/uploadUserImage', function (req, res) {
+app.post('/uploadUserImage', ensureLoggedIn, function (req, res, next) {
   interfaceIMG.upload(req, res, function (err) {
     if (err) {
       console.log("errir" , err)
@@ -100,7 +139,7 @@ app.post('/uploadUserImage', function (req, res) {
 });
 
 /* MODIFICAR CLIENTES */
-app.post('/config/modificarCliente', function (req, res) {
+app.post('/config/modificarCliente', ensureLoggedIn, function (req, res, next) {
    interfaceIMG.upload(req, res, function (err) {
     if (err) {
         console.log("errir" , err)
@@ -159,7 +198,7 @@ app.post('/config/modificarCliente', function (req, res) {
 });
 
 /* MODIFICAR NOTICIAS */
-app.post('/config/modificarNoticia', function (req, res) {
+app.post('/config/modificarNoticia', ensureLoggedIn, function (req, res, next) {
    interfaceIMG.upload(req, res, function (err) {
     if (err) {
         console.log("errir" , err)
@@ -194,7 +233,7 @@ app.post('/config/modificarNoticia', function (req, res) {
   });
 });
 
-app.get('/config/borrarCliente', function (req, res) {
+app.get('/config/borrarCliente', ensureLoggedIn, function (req, res, next) {
   interfaceDB.eliminarLogo(req.query.id_cliente, function(){
     interfaceDB.eliminarCliente(req.query.id_cliente, function(){
       interfaceIMG.borrarImagen(req.query.img.replace("uploads/", "uploads/originalImages/"));
@@ -204,7 +243,7 @@ app.get('/config/borrarCliente', function (req, res) {
   }); 
 });
 
-app.get('/config/borrarNoticia', function (req, res) {
+app.get('/config/borrarNoticia', ensureLoggedIn, function (req, res, next) {
   interfaceDB.eliminarNoticia(req.query.id_noticia, function(){
     interfaceIMG.borrarImagen(req.query.img);
     res.redirect("/config/noticias#modificar");
@@ -212,7 +251,7 @@ app.get('/config/borrarNoticia', function (req, res) {
 });
 
 /** BACKEND falta configurar inicio de sesion */
-app.get('/config/clientes', function (req, res) {
+app.get('/config/clientes', ensureLoggedIn, function (req, res, next) {
   interfaceDB.resetArrays();
    var order = req.query.ordenar ? req.query.ordenar : "id_cliente";
    interfaceDB.crearObjetoMenu(false, function() {
@@ -232,7 +271,7 @@ app.get('/config/clientes', function (req, res) {
 });
 
 /** BACKEND falta configurar inicio de sesion */
-app.get('/config/noticias', function (req, res) {
+app.get('/config/noticias', ensureLoggedIn, function (req, res, next) {
   interfaceDB.resetArrays();
    var order = req.query.ordenar ? req.query.ordenar : "id_noticia";
    interfaceDB.crearObjetoMenu(false, function() {
@@ -253,7 +292,7 @@ app.get('/config/noticias', function (req, res) {
 
 
 /** BACKEND falta configurar el inicio de sesion */
-app.get('/config', function (req, res) {
+app.get('/config', ensureLoggedIn, function (req, res, next) {
    interfaceDB.crearObjetoMenu(false, function() {
     var objectShow = {}
     objectShow.menu = interfaceDB.objetoMenu;

@@ -29,7 +29,7 @@
   var mysql = require('mysql'); // librería mysql
   interfaceDB.objetoMenu = {"arrayMenu":[]};
   interfaceDB.connection = mysql.createConnection({
-    host     : 'localhost',
+    host     : '54.77.215.141',
     user     : 'tuperiod_revista',
     password : 'Dbz111187?',
     database : 'tuperiod_revista'
@@ -39,9 +39,9 @@
 
   interfaceDB.connection.connect(function(err){
     if(!err) {
-        console.log("Database is connected ... nn");    
+        console.log("Database is connected ... nn" );    
     } else {
-        console.log("Error connecting database ... nn");    
+        console.log("Error connecting database ... nn" + err);    
     }
   });
   
