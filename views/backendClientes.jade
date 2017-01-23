@@ -1,0 +1,23 @@
+html
+  head
+    include headers
+    include scriptsBackend
+    title!= title
+  body
+    include navBarBackend
+    .container
+      .row
+        ul.nav.nav-tabs
+          li#li-insertar.active.li-tab
+            a(data-toggle='tab', href='#insertar') Insertar Cliente
+          li#li-modificar.li-tab
+            a(data-toggle='tab', href='#modificar') Modificar Cliente
+        .tab-content
+          #insertar.tab-pane.active
+            if(ClienteModificar)
+              include formModificarCliente
+            else
+              include formClient
+          #modificar.tab-pane.fade
+            include modificarClientes
+

@@ -1,0 +1,68 @@
+.container
+  .col-sm-3
+  .col-sm-6
+      .col-sm-12.text-center
+        .col-sm-12
+            .col-sm-12
+              .col-sm-2
+              .col-sm-8
+                h1.center-block Modificar Cliente
+            br
+            form(role='form', autocomplete='off', enctype='multipart/form-data', action='/config/modificarCliente', method='post')
+             input(type="hidden" value="#{ClienteModificar.id_cliente}" name="id_cliente")
+             .col-sm-12
+                 .col-sm-2
+                 .form-group.col-sm-8
+                   .form-group
+                   label(for='name') Nombre:
+                   input#name.form-control(type='text', name='name', value="#{ClienteModificar.nombre}")
+             .col-sm-12
+                 .col-sm-2
+                 .form-group.col-sm-8
+                    label.control-label(for='sel2') Municipio:
+                    select#sel2.form-control(name="municipio")
+                        each item, i in menu.arrayMenu
+                          each municipio, i in item.municipios
+                                -if(ClienteModificar.id_municipio != municipio.nombre)
+                                  option(value='#{municipio.nombre}') #{municipio.nombre}
+                                -else
+                                  option(value='#{municipio.nombre}' selected="selected") #{municipio.nombre}
+             .col-sm-12
+                .col-sm-2
+                .control-group.col-sm-8
+                  label.custom-file Logo
+                    input#file.custom-file-input(type='file', name='file')
+                    span.custom-file-control
+                    br
+                    input(type="hidden" value="#{ClienteModificar.logo}" name="old_logo")
+                    img(src="/#{ClienteModificar.logo}" width="150px")
+             .col-sm-12
+                .col-sm-2
+                .control-group.col-sm-8
+                 .form-group
+                    label(for='email') Email:
+                    input#email.form-control(name="email" type='email' placeholder="ejemplo@ejemplo.com" value="#{ClienteModificar.mail}")
+             .col-sm-12
+                .col-sm-2
+                .control-group.col-sm-8
+                 .form-group
+                    label(for='web') Web:
+                    input#web.form-control(name="web" type='text' placeholder="www.ejemplo.com" value="#{ClienteModificar.web}")
+             .col-sm-12
+                .col-sm-2
+                .control-group.col-sm-8
+                 .form-group
+                    label(for='telefono') Telefono:
+                    input#telefono.form-control(name="telefono" type='text' placeholder="teléfono o móvil" value="#{ClienteModificar.telefono}")
+              .col-sm-12
+                .col-sm-2
+                .col-sm-8
+                    label.control-label(for='tamnyo-add') Tamaño del anuncio:
+              .col-sm-12
+                include formPlantillas 
+              .col-sm-12
+                br
+                .col-sm-2
+                .col-sm-8
+                    button.btn.btn-success.center-block(type="submit") Enviar
+br

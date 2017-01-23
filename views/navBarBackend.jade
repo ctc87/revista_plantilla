@@ -1,0 +1,48 @@
+header
+  // Top
+  nav#top
+    .container
+      .row
+        .col-md-6
+          strong Configuración del sitio
+        .col-md-6
+          ul.list-inline.top-link.link
+            li
+              a(href='/config')
+                i.fa.fa-home
+                |  Backend
+  // Navigation
+  nav#menu.navbar.container
+    .navbar-header
+      button.btn.btn-navbar.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
+        i.fa.fa-bars
+      a.navbar-brand(href='#')
+        .logo
+          span Newspaper
+    .collapse.navbar-collapse.navbar-ex1-collapse
+      ul.nav.navbar-nav
+        li
+          a(href='/Config') Home
+        li.dropdown
+         a.dropdown-toggle(href='#', data-toggle='dropdown')
+           | Clientes  
+           i.fa.fa-arrow-circle-o-down
+         .dropdown-menu
+           .dropdown-inner
+              ul.list-unstyled
+                  li
+                    a(href='/config/clientes#insertar') Insertar
+                  li
+                    a(href='/config/clientes#modificar') Modificar
+        li.dropdown
+         a.dropdown-toggle(href='#', data-toggle='dropdown')
+           | Noticias  
+           i.fa.fa-arrow-circle-o-down
+         .dropdown-menu
+           .dropdown-inner
+              ul.list-unstyled
+                  li
+                    a(href='/config/noticias#insertar') Insertar
+                  li
+                    a(href='/config/noticias#modificar') Modificar
+                          

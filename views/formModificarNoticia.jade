@@ -1,0 +1,70 @@
+.container
+  .col-sm-1
+  .col-sm-10
+    .col-sm-12.text-center
+      h1.center-block Modificar Noticia
+      br
+      form(role='form', autocomplete='off', enctype='multipart/form-data', action='/config/modificarNoticia', method='post')
+       input(type="hidden" value="#{noticiaModificar.id_noticia}" name="id_noticia")
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+             .form-group
+             label(for='titular') Titular:
+             input#titular.form-control(type='text', name='titular' value="#{noticiaModificar.titular}")
+        .col-sm-12
+          .col-sm-2
+          .col-sm-8
+            .form-group
+              label.control-label(for='datetimepicker1') Fecha:
+              #datetimepicker1.input-group.date
+                input.form-control(type='text' name="fecha" value="#{noticiaModificar.fecha}")
+                span.input-group-addon
+                  span.glyphicon.glyphicon-th
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+              label.control-label(for='sel2') Municipio:
+              select#sel2.form-control(name="municipio")
+                  each item, i in menu.arrayMenu
+                    each municipio, i in item.municipios
+                        -if(noticiaModificar.id_municipio != municipio.nombre)
+                          option(value='#{municipio.nombre}') #{municipio.nombre}
+                        -else
+                          option(value='#{municipio.nombre}' selected="selected") #{municipio.nombre}
+       .col-sm-12
+          .col-sm-2
+          .control-group.col-sm-8
+            label.custom-file Foto
+              input#file.custom-file-input(type='file', name='file')
+              span.custom-file-control
+              br
+              input(type="hidden" value="#{noticiaModificar.imagen}" name="old_logo")
+              img(src="/#{noticiaModificar.imagen}" width="150px")
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+             .form-group
+             label(for='fuenteNombre') Enlace a la fuente original:
+             input#fuenteEnlace.form-control(type='text', name='fuenteEnlace' value="#{noticiaModificar.fuente_enclace}")
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+             .form-group
+             label(for='fuenteNombre') Nombre de la fuente:
+             input#fuenteNombre.form-control(type='text', name='fuenteNombre' value="#{noticiaModificar.fuente_nombre}")
+        .col-sm-12
+          .form-group
+            label(for='contenido') Contenido:
+            textarea#contenido.form-control(rows='5' name="contenido")
+             | !{noticiaModificar.contenido}
+        .col-sm-12
+          br
+          .col-sm-2
+          .col-sm-8
+              button.btn.btn-success.center-block(type="submit") Enviar
+br
+script(type='text/javascript').
+  $(function () {
+    $('#datetimepicker1').datetimepicker();
+  });

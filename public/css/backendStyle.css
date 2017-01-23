@@ -1,0 +1,47 @@
+.entry:not(:first-of-type)
+{
+    margin-top: 10px;
+}
+
+.glyphicon
+{
+    font-size: 12px;
+}
+
+.my-group .form-control{
+    width:50%;
+}
+.contendeor-todas-plantillas {
+ border: 1px black solid;   
+}
+
+.fila-plantillas {
+ margin-top: 2%;   
+}
+
+.modal-cuerpo {
+ overflow-y: scroll; 
+ height: 30vw;
+}
+
+.red {
+ background-color: red;
+}
+
+.blue {
+ background-color: blue;
+}
+
+.yellow {
+ background-color: yellow;
+}
+
+.white-transparent {background-color: rgba(255, 255, 255, 0.5);} 
+
+.thubnail-sup {
+ position:absolute;
+ width: 150px;
+ left: 60%;
+ border: black 3px solid;
+ border-radius: 5px;
+}

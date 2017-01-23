@@ -1,0 +1,41 @@
+.body {
+    display: table;
+    /*background-color: green;*/
+}
+
+.left-side {
+    /*background-color: blue;*/
+    float: none;
+    display: table-cell;
+}
+
+.right-side {
+    /*background-color: red;*/
+    float: none;
+    display: table-cell;
+}
+
+.contendeor-1-anuncio {
+ /*border: solid 3px black;*/
+ border-radius: 20px;
+ /*background: #548FD9;*/
+ background: rgba(61, 126, 229, .2);
+ margin-top: 5%;
+ margin-bottom: 5%;
+-webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+}
+
+
+.red {
+ background-color: red;
+}
+
+.blue {
+ background-color: blue;
+}
+
+.yellow {
+ background-color: yellow;
+}

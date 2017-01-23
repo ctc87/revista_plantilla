@@ -1,0 +1,87 @@
+mixin noticia(noticias, index)
+    // button.btn.btn-primary(data-toggle='modal', data-target='#mod-#{id_noticia}') Large modal
+    .modal.fade(style="top:45%" id='mod-#{noticias[index].id_noticia}' tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+      .modal-dialog.modal-lg
+        .modal-content #{noticias[index].fuente_enclace} 
+    .modal.fade(style="top:10%" id='cont-mod-#{noticias[index].id_noticia}' tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
+      .modal-dialog.modal-lg
+        .modal-content(style="padding:10%") 
+            h5 Contenido
+            | !{noticias[index].contenido}         
+    .modal.fade(id="mod-del-#{noticias[index].id_noticia}" tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal')
+              span(aria-hidden='true') ×
+              span.sr-only Close
+            h4#frm_title.modal-title BORRAR UNA NOTICIA
+          #frm_body.modal-body
+            p ¿Desea Borrar? 
+            p 
+                b Titualar noticia: 
+                | #{noticias[index].titular}
+            p 
+                b id: 
+                | #{noticias[index].id_noticia}
+            p 
+                b Municipio: 
+                | #{noticias[index].id_municipio}
+            p 
+                b Fuente: 
+                | #{noticias[index].fuente_nombre}
+          .modal-footer
+            a(href='/config/borrarNoticia?id_noticia=#{noticias[index].id_noticia}&img=#{noticias[index].imagen}')
+                button#frm_submit.btn.btn-primary.col-sm-2.pull-right(style='margin-left:10px;', type='button') Si
+            button#frm_cancel.btn.btn-danger.col-sm-2.pull-right(type='button', data-dismiss='modal') No    
+    tr
+        td #{noticias[index].id_noticia}
+        td #{noticias[index].fecha}
+        td #{noticias[index].titular}
+        td #{noticias[index].id_municipio}
+        td #{noticias[index].fuente_nombre}
+        td 
+            button.btn.btn-info(type='button', aria-label='Left Align' onmouseover="document.getElementById('#{noticias[index].id_noticia}').style.display='block';", onmouseout="document.getElementById('#{noticias[index].id_noticia}').style.display='none';") 
+                span.glyphicon.glyphicon-picture(aria-hidden='true')
+            img.thubnail-sup(id="#{noticias[index].id_noticia}" style='display:none', src='/#{noticias[index].imagen}' alt='#{noticias[index].imagen}')
+        td
+            button.btn.btn-success(type='button', aria-label='Left Align' data-toggle='modal', data-target='#mod-#{noticias[index].id_noticia}')
+                span.glyphicon.glyphicon-globe(aria-hidden='true')
+                
+        td
+            button.btn.btn-primary(type='button', aria-label='Left Align' data-toggle='modal', data-target='#cont-mod-#{noticias[index].id_noticia}')
+                span.glyphicon.glyphicon-file(aria-hidden='true')
+        
+        td 
+            a(href="/config/noticias?id_noticia=#{noticias[index].id_noticia}#insertar")
+                button.btn.btn-warning(type='button', aria-label='Left Align')
+                    span.glyphicon.glyphicon-pencil(aria-hidden='true')
+        td 
+            button.btn.btn-danger(type='button', aria-label='Left Align' data-toggle='modal', data-target='#mod-del-#{noticias[index].id_noticia}')
+                span.glyphicon.glyphicon-trash(aria-hidden='true')
+
+.container.white-transparent.text-center
+  h2 Modificar Clientes
+  table.table.table-striped
+    thead
+      tr
+        th  
+         a(href="/config/noticias?ordenar=id_noticia#modificar") id_noticia
+        th  
+         a(href="/config/noticias?ordenar=fecha#modificar")  Fecha
+        th  
+         a(href="/config/noticias?ordenar=titular#modificar")  Titular
+        th  
+         a(href="/config/noticias?ordenar=nombre_municipio#modificar")  Municipio
+        th   
+         a(href="/config/noticias?ordenar=fuente_nombre#modificar") Nombre fuente
+        th Img
+        th Link
+        th Cont
+        th Mod
+        th Borrar
+    tbody
+        each noticia, index in noticias
+            +noticia(noticias, index)
+br
+br

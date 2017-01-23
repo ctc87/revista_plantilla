@@ -1,0 +1,67 @@
+.col-sm-12
+    .col-sm-2
+    .col-sm-8.input-group
+        span.input-group-btn
+            button.btn.btn-info(type='button', data-toggle='modal', data-target='#myModal') ?
+        select#tamnyo-add.form-control.selectpicker(name="tamnyo_add")
+            -if(ClienteModificar) {
+            
+            -if(ClienteModificar.formato != "1x1")
+                option(value="1x1") 1x1
+            -else
+                option(value="1x1" selected="selected") 1x1
+            
+            -if(ClienteModificar.formato != "1x2")
+                option(value="1x2") 1x2
+            -else
+                option(value="1x2" selected="selected") 1x2
+            
+            -if(ClienteModificar.formato != "2x4")
+                option(value="2x4") 2x4
+            -else
+                option(value="2x4" selected="selected") 2x4
+                
+            - } else {
+                option(value="1x1") 1x1
+                option(value="1x2") 1x2
+                option(value="2x4") 2x4
+            - }
+        // Modal
+        #myModal.modal.fade(role='dialog')
+          .modal-dialog
+            // Modal content
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal') ×
+                h4.modal-title Tama&ntilde;o anuncio
+               .col-sm-12.modal-cuerpo
+                   .col-sm-12.fila-plantillas
+                        .col-sm-2
+                            p 1x1
+                            img.img-responsive(src="/images/plantillas/1x1.png")
+                        .col-sm-4
+                            p 2x1
+                            img.img-responsive(src="/images/plantillas/2x1.png")
+                        .col-sm-2.contenedor-plantilla
+                            p 1x2
+                            img.img-responsive(src="/images/plantillas/1x2.png")
+                        .col-sm-4
+                            p 2x2
+                            img.img-responsive(src="/images/plantillas/2x2.png")
+                    .col-sm-12.fila-plantillas
+                        .col-sm-4
+                            p 2x3
+                            img.img-responsive(src="/images/plantillas/2x3.png")
+                        .col-sm-6
+                            p 3x2
+                            img.img-responsive(src="/images/plantillas/3x2.png")
+                        .col-sm-2
+                    .col-sm-12.fila-plantillas
+                        .col-sm-6
+                            p 4x2
+                            img.img-responsive(src="/images/plantillas/4x2.png")
+                        .col-sm-6
+                            p 4x4
+                            img.img-responsive(src="/images/plantillas/4x4.png")
+              .modal-footer
+                button.btn.btn-success(type='button', data-dismiss='modal') Close

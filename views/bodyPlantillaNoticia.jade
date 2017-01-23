@@ -1,0 +1,53 @@
+include mixinsAnunciosNoticias 
+    
+.featured.container
+    .row
+      .col-sm-8
+       each not, index in noticias
+        if id_noticia == not.id_noticia
+         +noticias(noticias, index)
+      #main-content.col-sm-4
+       each client, index in clients1x1
+        +anuncio1x1(clients1x1, index)
+        br
+br             
+.featured.archive-page.container
+  .row
+    .col-sm-2
+    .col-sm-8
+      // Carousel
+      #carousel-example-generic.carousel.slide(data-ride='carousel')
+        // Indicators
+        ol.carousel-indicators
+            each client, index in clients2x4
+                +indicators(index)
+        // Wrapper for slides
+        .carousel-inner
+            each client, index in clients2x4
+                +anuncio2x4(clients2x4, index)
+            
+        // Controls
+        a.left.carousel-control(href='#carousel-example-generic', data-slide='prev')
+          span.glyphicon.glyphicon-chevron-left
+        a.right.carousel-control(href='#carousel-example-generic', data-slide='next')
+          span.glyphicon.glyphicon-chevron-right
+
+  
+#page-content.archive-page.container
+  div
+    .row
+      #main-content.col-md-12
+        each not, index in noticias
+            if id_noticia != not.id_noticia
+                +noticias(noticias, index)
+
+
+script.
+  $(document).ready(function() {
+  $("#owl-demo").owlCarousel({
+  autoPlay: 3000,
+  items : 5,
+  itemsDesktop : [1199,4],
+  itemsDesktopSmall : [979,4]
+  });
+  });

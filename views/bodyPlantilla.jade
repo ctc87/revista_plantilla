@@ -1,0 +1,60 @@
+include mixinsAnunciosNoticias 
+
+.featured.container
+  .row
+    .col-sm-8
+      // Carousel
+      #carousel-example-generic.carousel.slide(data-ride='carousel')
+        // Indicators
+        ol.carousel-indicators
+            each client, index in clients2x4
+                +indicators(index)
+        // Wrapper for slides
+        .carousel-inner
+            each client, index in clients2x4
+                +anuncio2x4(clients2x4, index)
+            
+        // Controls
+        a.left.carousel-control(href='#carousel-example-generic', data-slide='prev')
+          span.glyphicon.glyphicon-chevron-left
+        a.right.carousel-control(href='#carousel-example-generic', data-slide='next')
+          span.glyphicon.glyphicon-chevron-right
+    #main-content.col-sm-4
+      .box
+        a(href='/news?id_municipio=#{noticias[0].id_municipio}&id_noticia=#{noticias[0].id_noticia}')
+          h2.vid-name #{noticias[0].titular}
+        .info
+          h5
+            | Fuente 
+            a(href='#{noticias[0].fuente_enclace}') #{noticias[0].fuente_nombre}
+          span
+            i.fa.fa-calendar
+            |  #{noticias[0].fecha}
+        .wrap-vid
+          .zoom-container
+            .zoom-caption
+            img(src='#{noticias[0].imagen}')
+            
+.featured.container
+  #owl-demo.owl-carousel
+    each client, index in clients1x1
+        +anuncio1x1(clients1x1, index)
+
+        
+#page-content.archive-page.container
+  div
+    .row
+      #main-content.col-md-12
+        each not, index in noticias
+          +noticias(noticias, index)
+
+
+script.
+  $(document).ready(function() {
+  $("#owl-demo").owlCarousel({
+  autoPlay: 3000,
+  items : 5,
+  itemsDesktop : [1199,4],
+  itemsDesktopSmall : [979,4]
+  });
+  });
