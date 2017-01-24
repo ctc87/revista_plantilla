@@ -1,0 +1,6 @@
+#!/bin/bash
+_now=$(date +"%m_%d_%Y")
+_file="/home/tuperiod/nodejs/periodico/db/copia_seguridad/backup_$_now.sql"
+echo "Ejecutando copia de seguridad de la BD en $_now a la ruta $_file ."
+mysqldump --user=tuperiod_revista --password=Dbz111187?  tuperiod_revista > "$_file"
+
