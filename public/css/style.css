@@ -13,8 +13,8 @@ html, body {width:100%; padding:0; margin:0;}
 /* ---------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------- */
-html { -webkit-text-size-adjust: none;}
-.video embed,.video object,.video iframe { width: 100%;  height: auto;}
+html { -webkit-text-size-adjust: none;}
+.video embed,.video object,.video iframe { width: 100%; height: auto;}
 img{max-width:100%;	height: auto;width: auto\9; /* ie8 */}
 
 h1 {font-size: 38px;}
@@ -154,7 +154,7 @@ header{}
 /* Carousel Header Styles */
 .header-text {position: absolute;top: 10%;left: 1.8%;right: auto;width: 96.66666666666666%;color: #fff;}
 .header-text h2 {font-size: 40px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #DA251D;display:inline-block;color:#fff;}
-.header-text h3 {color: #fff;}
+.header-text h3 {color: #fff; background-color: rgba(0, 0, 0, 0.5)}
 
 /* ---------------------------------------------------------------------------- */
 /* -------------------------------------Content-------------------------------- */
