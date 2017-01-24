@@ -30,7 +30,8 @@ create table clientes (
     mail VARCHAR(200),
     web VARCHAR(1000),
     id_municipio MEDIUMINT NOT NULL,
-    FOREIGN KEY (id_municipio) REFERENCES municipios(id_municipio)
+    FOREIGN KEY (id_municipio) REFERENCES municipios(id_municipio),
+    portada BOOLEAN NOT NULL
 );
 
 
@@ -56,7 +57,8 @@ create table noticias(
     ruta_foto VARCHAR(100),
     id_municipio MEDIUMINT NOT NULL,
     PRIMARY KEY (id_noticia),
-    FOREIGN KEY (id_municipio) REFERENCES municipios(id_municipio)
+    FOREIGN KEY (id_municipio) REFERENCES municipios(id_municipio),
+    portada BOOLEAN NOT NULL
 );
 
 

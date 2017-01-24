@@ -29,6 +29,26 @@
                                   option(value='#{municipio.nombre}' selected="selected") #{municipio.nombre}
              .col-sm-12
                 .col-sm-2
+                .form-group.col-sm-8
+                  - if(ClienteModificar.portada) {
+                      label.radio.inline.control-label Portada
+                      label.radio-inline
+                        input(type='radio', name='portada', value='true', checked="checked")
+                        | Si
+                      label.radio-inline
+                        input(type='radio', name='portada', value='false')
+                        | No
+                  - } else {
+                      label.radio.inline.control-label Portada
+                      label.radio-inline
+                        input(type='radio', name='portada', value='true')
+                        | Si
+                      label.radio-inline
+                        input(type='radio', name='portada', value='false', checked="checked")
+                        | No
+                  - }
+             .col-sm-12
+                .col-sm-2
                 .control-group.col-sm-8
                   label.custom-file Logo
                     input#file.custom-file-input(type='file', name='file')

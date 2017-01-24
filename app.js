@@ -47,9 +47,8 @@ app.get('/callback',
 
 
 
-
 // formulario de inserción de noticia con imagen
-app.post('/uploadNoticiaImage', ensureLoggedIn, function(req, res, next) {
+app.post('/config/uploadNoticiaImage', ensureLoggedIn, function(req, res, next) {
   interfaceIMG.upload(req, res, function (err) {
     if (err) {
         console.log("error" , err)
@@ -70,7 +69,8 @@ app.post('/uploadNoticiaImage', ensureLoggedIn, function(req, res, next) {
         req.body.fuenteEnlace, 
         req.body.fuenteNombre, 
         req.body.fecha, 
-        interfaceDB.objetoIds.id_municipio, 
+        interfaceDB.objetoIds.id_municipio,
+        req.body.portada, 
         function(){
           console.log("insertada noticia");
         });
@@ -98,14 +98,15 @@ app.post('/uploadUserImage', ensureLoggedIn, function (req, res, next) {
       // console.log(req.body)
       return
     }
-    var extension = req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/)[1];
+    var extension = req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)[1];
     interfaceDB.obtenerIdMunicipioNombre(req.body.municipio, function(){
       interfaceDB.insertarCliente(
         req.body.name, 
         interfaceDB.objetoIds.id_municipio,
         req.body.telefono, 
         req.body.email, 
-        req.body.web, 
+        req.body.web,
+        req.body.portada,  
         function() {
         interfaceDB.obtenerIdClienteNombre(req.body.name, 
           function() {
@@ -160,7 +161,8 @@ app.post('/config/modificarCliente', ensureLoggedIn, function (req, res, next) {
         interfaceDB.objetoIds.id_municipio,
         req.body.telefono, 
         req.body.email, 
-        req.body.web, 
+        req.body.web,
+        req.body.portada,  
         function(){
           if(req.file) {
             interfaceDB.obtenerIdClienteNombre(req.body.name, 
@@ -168,7 +170,7 @@ app.post('/config/modificarCliente', ensureLoggedIn, function (req, res, next) {
                 interfaceDB.modificarLogo(
                   'uploads/'+req.file.originalname, 
                   req.file.originalname, 
-                  req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/)[1],
+                  req.file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)[1],
                   req.body.tamnyo_add,
                   interfaceDB.objetoIds.id_cliente, 
                   function(){
@@ -225,7 +227,8 @@ app.post('/config/modificarNoticia', ensureLoggedIn, function (req, res, next) {
         req.body.fuenteEnlace, 
         req.body.fuenteNombre, 
         req.body.fecha, 
-        interfaceDB.objetoIds.id_municipio, 
+        interfaceDB.objetoIds.id_municipio,
+        req.body.portada,  
         function(){
           res.redirect("/config/noticias#modificar");
         });  
@@ -255,7 +258,7 @@ app.get('/config/clientes', ensureLoggedIn, function (req, res, next) {
   interfaceDB.resetArrays();
    var order = req.query.ordenar ? req.query.ordenar : "id_cliente";
    interfaceDB.crearObjetoMenu(false, function() {
-      interfaceDB.crearObjetoTodosClientesOrdenado(order, function() {
+      interfaceDB.crearObjetoTodosClientesOrdenado(false, order, function() {
         var objectShow = {}
         objectShow.clients = interfaceDB.arrayClientes;
         if(req.query.id_cliente) {
@@ -275,7 +278,7 @@ app.get('/config/noticias', ensureLoggedIn, function (req, res, next) {
   interfaceDB.resetArrays();
    var order = req.query.ordenar ? req.query.ordenar : "id_noticia";
    interfaceDB.crearObjetoMenu(false, function() {
-      interfaceDB.crearObjetoTodasNoticias(order, function() {
+      interfaceDB.crearObjetoTodasNoticias(false, order, function() {
         var objectShow = {}
         objectShow.noticias = interfaceDB.arrayNoticias;
         if(req.query.id_noticia) {
@@ -302,11 +305,20 @@ app.get('/config', ensureLoggedIn, function (req, res, next) {
 
 // PORTADA falta definir la estructura para los elementos de portada en la BD y renderizarla con jade
 app.get("/",function(req,res){
-    interfaceDB.crearObjetoMenu(true, function() {
-    var objectShow = {}
-    objectShow.menu = interfaceDB.objetoMenu
-      res.render('index', objectShow);
-    }); // creamos objeto menu
+  interfaceDB.resetArrays();
+  interfaceDB.crearObjetoMenu(true, function() {
+    var objectShow = {};
+    objectShow.menu = interfaceDB.objetoMenu;
+    interfaceDB.crearObjetoTodosClientesOrdenado(true, 'id_cliente',  function(){
+      interfaceDB.crearObjetoTodasNoticias(true, 'id_noticia', function(){
+        objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
+        objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
+        objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
+        objectShow.noticias = interfaceDB.arrayNoticias;
+        res.render('indexSearch', objectShow);
+      });
+    });
+  }); // creamos objeto menu
 });
 
 app.get('/show', function(req, res) {

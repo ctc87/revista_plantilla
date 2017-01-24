@@ -1,4 +1,5 @@
 mixin cliente(clientes, index)
+    - var portadaSiNo = clientes[index].portada ? 'Si' : 'No';
     // button.btn.btn-primary(data-toggle='modal', data-target='#mod-#{id_cliente}') Large modal
     .modal.fade(style="top:45%" id='mod-#{clientes[index].id_cliente}' tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
       .modal-dialog.modal-lg
@@ -20,6 +21,9 @@ mixin cliente(clientes, index)
                 b id: 
                 | #{clientes[index].id_cliente}
             p 
+                b Portada: 
+                | #{portadaSiNo}
+            p 
                 b Municipio: 
                 | #{clientes[index].id_municipio}
             p 
@@ -37,6 +41,7 @@ mixin cliente(clientes, index)
             button#frm_cancel.btn.btn-danger.col-sm-2.pull-right(type='button', data-dismiss='modal') No    
     tr
         td #{clientes[index].id_cliente}
+        td #{portadaSiNo}
         td #{clientes[index].nombre}
         td #{clientes[index].id_municipio}
         td #{clientes[index].mail}
@@ -65,6 +70,8 @@ mixin cliente(clientes, index)
       tr
         th  
          a(href="/config/clientes?ordenar=id_cliente#modificar") id_cliente
+        th  
+         a(href="/config/clientes?ordenar=portada#modificar") portada
         th  
          a(href="/config/clientes?ordenar=nombre#modificar")  Nombre
         th  

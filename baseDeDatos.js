@@ -174,6 +174,7 @@
             imagen: rows[key].ruta_foto,
             fuente_enclace: rows[key].fuente_enclace,
             fuente_nombre: rows[key].fuente_nombre,
+            portada: rows[key].portada,
             contenido: contenido
           });
         } 
@@ -188,9 +189,10 @@
   /** RECUPERACIÓN DE DATOS NOTICIAS  
    * Crea un objeto con todas las noticias
    */    
-  interfaceDB.crearObjetoTodasNoticias = function(_order, callback) {
-  var query = 'Select * FROM `noticias` inner join `municipios` on noticias.id_municipio = municipios.id_municipio ' +  
-    'ORDER BY ' + _order + ';';
+  interfaceDB.crearObjetoTodasNoticias = function(_portada, _order, callback) {
+    var query = 'Select * FROM `noticias` inner join `municipios` on noticias.id_municipio = municipios.id_municipio ';
+    query += _portada ? 'where portada=true ' : ' ';
+    query += 'ORDER BY ' + _order + ';';
     var completed = false;
     var i = 0;
     interfaceDB.connection.query(query, function(err, rows, fields) {
@@ -198,22 +200,45 @@
         if(rows.length < 1) {
           callback();
         }
-        for(var key in rows) {
-          i++;
-          if(!(i<rows.length)) {
-            completed = true;
-          }
-          interfaceDB.arrayNoticias.push({
-            id_noticia: rows[key].id_noticia,
-            id_municipio: rows[key].nombre_municipio,
-            titular: rows[key].titular,
-            fecha: rows[key].fecha,
-            imagen: rows[key].ruta_foto,
-            fuente_enclace: rows[key].fuente_enclace,
-            fuente_nombre: rows[key].fuente_nombre,
-            contenido: rows[key].contenido
-          });
-        } 
+        if(!_portada) {
+          for(var key in rows) {
+            i++;
+            if(!(i<rows.length)) {
+              completed = true;
+            }
+            interfaceDB.arrayNoticias.push({
+              id_noticia: rows[key].id_noticia,
+              id_municipio: rows[key].nombre_municipio,
+              titular: rows[key].titular,
+              fecha: rows[key].fecha,
+              imagen: rows[key].ruta_foto,
+              fuente_enclace: rows[key].fuente_enclace,
+              fuente_nombre: rows[key].fuente_nombre,
+              portada: rows[key].portada,
+              contenido: rows[key].contenido
+            });
+          } 
+        } else {
+          for(var key in rows) {
+            i++;
+            if(!(i<rows.length)) {
+              completed = true;
+            }
+            var link = '/news?id_municipio=' + rows[key].id_municipio + '&id_noticia=' + rows[key].id_noticia;
+            var contenido = resumirNoticia(rows[key].contenido,link)
+            interfaceDB.arrayNoticias.push({
+              id_noticia: rows[key].id_noticia,
+              id_municipio: rows[key].id_municipio,
+              titular: rows[key].titular,
+              fecha: rows[key].fecha,
+              imagen: rows[key].ruta_foto,
+              fuente_enclace: rows[key].fuente_enclace,
+              fuente_nombre: rows[key].fuente_nombre,
+              portada: rows[key].portada,
+              contenido: contenido
+            });
+          } 
+        }
         if(completed)
           callback();
       } else {
@@ -226,34 +251,62 @@
    * Crea un objeto con tods los clientes para el backend
    * --------------------> FALTA CAMBIAR PARA HACERLO POR ZONAS CON LA MISMA FUNCIÓN
    */  
-    interfaceDB.crearObjetoTodosClientesOrdenado = function(_order, callback) {
+    interfaceDB.crearObjetoTodosClientesOrdenado = function(_portada, _order, callback) {
     var i = 0;
-    var query = 'Select clientes.id_cliente, municipios.nombre_municipio, clientes.nombre, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato ' +
+    var query = 'Select clientes.id_cliente, clientes.portada, municipios.nombre_municipio, clientes.nombre, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato ' +
     'From `clientes` inner join logos on ' +  
     'clientes.id_cliente = logos.id_cliente ' +
-    'inner join `municipios` on clientes.id_municipio = municipios.id_municipio ' +
-    'ORDER BY ' + _order + ';';
+    'inner join `municipios` on clientes.id_municipio = municipios.id_municipio ';
+    query += _portada ? ' where clientes.portada = true ' : ' ';
+    query += 'ORDER BY ' + _order + ';';
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(rows.length < 1) {
           callback();
         }
-        for(var key in rows) {
-          i++;
-          interfaceDB.arrayClientes.push({
+        if(!_portada) {
+          for(var key in rows) {
+            i++;
+            interfaceDB.arrayClientes.push({
+              id_cliente: rows[key].id_cliente,
+              id_municipio: rows[key].nombre_municipio,
+              nombre: rows[key].nombre,
+              logo: rows[key].ruta,
+              formato: rows[key].tamanyo_formato,
+              mail: rows[key].mail,
+              telefono: rows[key].telefono,
+              portada: rows[key].portada,
+              web: rows[key].web
+            });
+            if(!(i<rows.length)) {
+              callback();
+            }
+          
+          }
+        } else {
+          for(var key in rows) {
+          var arrayAux = [];
+          
+          if(rows[key].tamanyo_formato == "2x4")
+            arrayAux = interfaceDB.arrayClientes2x4;
+          else if(rows[key].tamanyo_formato == "1x2")
+            arrayAux = interfaceDB.arrayClientes1x2;
+          else if(rows[key].tamanyo_formato == "1x1")
+            arrayAux = interfaceDB.arrayClientes1x1;
+          arrayAux.push({
             id_cliente: rows[key].id_cliente,
-            id_municipio: rows[key].nombre_municipio,
             nombre: rows[key].nombre,
             logo: rows[key].ruta,
-            formato: rows[key].tamanyo_formato,
             mail: rows[key].mail,
             telefono: rows[key].telefono,
+            portada: rows[key].portada,
             web: rows[key].web
           });
-          if(!(i<rows.length)) {
-            callback();
+            i++;
+            if(!(i<rows.length)) {
+              callback();
+            }
           }
-        
         }
 
       } else {
@@ -270,7 +323,7 @@
   interfaceDB.crearObjetoCuerpoMunicipio = function(_id_municipio, callback) {
     var completed = false;
     var i = 0;
-    var query = 'Select clientes.id_cliente, clientes.nombre, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato From `clientes` inner join logos on ' +  
+    var query = 'Select clientes.id_cliente, clientes.nombre, clientes.portada, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato From `clientes` inner join logos on ' +  
     'clientes.id_cliente = logos.id_cliente ' +
     'where id_municipio = ' + _id_municipio + ';';
      interfaceDB.connection.query(query, function(err, rows, fields) {
@@ -293,6 +346,7 @@
           logo: rows[key].ruta,
           mail: rows[key].mail,
           telefono: rows[key].telefono,
+          portada: rows[key].portada,
           web: rows[key].web
         });
           i++;
@@ -348,13 +402,14 @@
   /** INSERCIÓN DE DATOS CLIENTES  
    *  Inserta un cliente nuevo
    */  
-  interfaceDB.insertarCliente  = function(_nombre, _municipio, _telefono, _mail, _web, callback) {
-    var query = 'INSERT INTO `clientes` (`nombre`, `id_municipio`, `telefono`, `mail`, `web`) ' +  
+  interfaceDB.insertarCliente  = function(_nombre, _municipio, _telefono, _mail, _web, _portada, callback) {
+    var query = 'INSERT INTO `clientes` (`nombre`, `id_municipio`, `telefono`, `mail`, `web`, `portada`) ' +  
       'VALUES ("'  + _nombre + 
               '",' + _municipio + 
               ',' + _telefono + 
-              ',"' + _mail + 
-              '","' + _web + '");';
+              ',"' + _mail +  
+              '","' + _web + 
+              '",' + _portada + ');';
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         callback();
@@ -368,15 +423,16 @@
   /** INSERCIÓN DE DATOS NOTICIAS  
    *  Inserta una noticia nueva
    */    
-  interfaceDB.insertarNoticia = function(_titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, callback) {
-    var query = 'INSERT INTO `noticias`(`fecha`, `fuente_nombre`, `fuente_enclace`, `titular`, `contenido`, `ruta_foto`, `id_municipio`)' +
+  interfaceDB.insertarNoticia = function(_titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, _portada, callback) {
+    var query = 'INSERT INTO `noticias`(`fecha`, `fuente_nombre`, `fuente_enclace`, `titular`, `contenido`, `ruta_foto`, `id_municipio`, `portada`)' +
       ' VALUES ("' + _fecha + 
         '" , "' + _nombreFuente +
         '" , "' + _enlaceFuente + 
         '" , "' + _titular + 
         '" , \'' + _contenido + 
         '\' , "' + _imagen + 
-        '" ,' + _municipio + ');'; 
+        '" ,' + _municipio + 
+        ' ,' + _portada + ');'; 
         
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
@@ -413,7 +469,7 @@
   /** MODICACIÓN DE DATOS CLIENTE  
    *  Modifica información de un cliente pasado como id
    */ 
-  interfaceDB.modificarCliente  = function(_id_cliente, _nombre, _municipio, _telefono, _mail, _web, callback) {
+  interfaceDB.modificarCliente  = function(_id_cliente, _nombre, _municipio, _telefono, _mail, _web, _portada, callback) {
      var query = 'UPDATE `clientes` SET ' +  
       'nombre = "'  + _nombre + 
       '", id_municipio = ' + _municipio + 
@@ -472,7 +528,7 @@
   /** MODIFICAR DE DATOS NOTICIAS  
    *  Modifica una noticia pasada como id
    */    
-  interfaceDB.modificarNoticia = function(_id_noticia, _titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, callback) {
+  interfaceDB.modificarNoticia = function(_id_noticia, _titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, _portada, callback) {
     var query = 'UPDATE `noticias` SET ' +
       ' fecha = "' + _fecha + 
         '" , fuente_nombre = "' + _nombreFuente +
@@ -481,6 +537,7 @@
         '" , contenido = \'' +  _contenido +
         '\' , ruta_foto = "' + _imagen + 
         '" , id_municipio = ' + _municipio + 
+        '" , porta = ' + _portada + 
         ' WHERE id_noticia =  ' + _id_noticia + ';'; 
     // console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {

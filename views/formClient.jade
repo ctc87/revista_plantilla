@@ -22,7 +22,17 @@
                     select#sel2.form-control(name="municipio")
                         each item, i in menu.arrayMenu
                           each municipio, i in item.municipios
-                                option(value='#{municipio.nombre}') #{municipio.nombre}
+                            option(value='#{municipio.nombre}') #{municipio.nombre}
+             .col-sm-12
+                .col-sm-2
+                .form-group.col-sm-8
+                   label.radio.inline.control-label Portada
+                   label.radio-inline
+                     input(type='radio', name='portada', value='true', checked="checked")
+                     | Si
+                   label.radio-inline
+                     input(type='radio', name='portada', value='false')
+                     | No
              .col-sm-12
                 .col-sm-2
                 .control-group.col-sm-8

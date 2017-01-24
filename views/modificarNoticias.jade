@@ -1,4 +1,5 @@
 mixin noticia(noticias, index)
+    - var portadaSiNo = noticias[index].portada ? 'Si' : 'No';
     // button.btn.btn-primary(data-toggle='modal', data-target='#mod-#{id_noticia}') Large modal
     .modal.fade(style="top:45%" id='mod-#{noticias[index].id_noticia}' tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
       .modal-dialog.modal-lg
@@ -25,6 +26,9 @@ mixin noticia(noticias, index)
                 b id: 
                 | #{noticias[index].id_noticia}
             p 
+                b Portada: 
+                | #{portadaSiNo}
+            p 
                 b Municipio: 
                 | #{noticias[index].id_municipio}
             p 
@@ -36,6 +40,7 @@ mixin noticia(noticias, index)
             button#frm_cancel.btn.btn-danger.col-sm-2.pull-right(type='button', data-dismiss='modal') No    
     tr
         td #{noticias[index].id_noticia}
+        td #{portadaSiNo}
         td #{noticias[index].fecha}
         td #{noticias[index].titular}
         td #{noticias[index].id_municipio}
@@ -67,6 +72,8 @@ mixin noticia(noticias, index)
       tr
         th  
          a(href="/config/noticias?ordenar=id_noticia#modificar") id_noticia
+        th  
+         a(href="/config/noticias?ordenar=portada#modificar") Portada
         th  
          a(href="/config/noticias?ordenar=fecha#modificar")  Fecha
         th  

@@ -3,14 +3,13 @@
     var fs = require('fs'); // manejo sistea de ficheros
     var multer  = require('multer'); // subida de archivos al servidor
     var Jimp = require("jimp");
-    
     /* configuración de la subida de archivos para imagenes */
     // FALTA GESTIONAR EL TAMAÑO
     interfaceIMG.upload = multer({
       dest:'uploads/',
       inMemory: true, 
       fileFilter: function (req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
             return cb(new Error('Solo se aceptan imagnes como subida'));
         }
         cb(null, true);
@@ -65,14 +64,14 @@
         src.on('end', function() { // terminada lectura del archivo
             if(_original) {
               interfaceIMG.guardarImagenOriginal(_tmp_path, _target_path, function(){
-                  fs.unlink(_tmp_path); // borramos temporal
+                   interfaceIMG.borrarImagen(_tmp_path); // borramos temporal
                   aspectRatioFunction(_target_path, _target_path);
                   callback(); 
               } , function() {
                   errorCallback();
               });
             } else {
-              fs.unlink(_tmp_path); // borramos temporal
+              interfaceIMG.borrarImagen(_tmp_path); // borramos temporal
               aspectRatioFunction(_target_path, _target_path);
               callback();
             }
@@ -83,7 +82,7 @@
     }
     
     interfaceIMG.borrarImagen = function(_img_path) {
-        fs.unlink(_img_path);
+      fs.unlink(_img_path);
     }
   
   return interfaceIMG;

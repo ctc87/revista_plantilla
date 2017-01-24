@@ -11,6 +11,16 @@
              .form-group
              label(for='titular') Titular:
              input#titular.form-control(type='text', name='titular')
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+              label.radio.inline.control-label Portada
+              label.radio-inline
+                input(type='radio', name='portada', value='true', checked="checked")
+                | Si
+              label.radio-inline
+                input(type='radio', name='portada', value='false')
+                | No
         .col-sm-12
           .col-sm-2
           .col-sm-8
