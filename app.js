@@ -257,7 +257,7 @@ app.get('/config/borrarNoticia', ensureLoggedIn, function (req, res, next) {
 app.get('/config/clientes', ensureLoggedIn, function (req, res, next) {
   interfaceDB.resetArrays();
    var order = req.query.ordenar ? req.query.ordenar : "id_cliente";
-   interfaceDB.crearObjetoMenu(false, function() {
+   interfaceDB.crearObjetoMenu(false, false, function() {
       interfaceDB.crearObjetoTodosClientesOrdenado(false, order, function() {
         var objectShow = {}
         objectShow.clients = interfaceDB.arrayClientes;
@@ -277,7 +277,7 @@ app.get('/config/clientes', ensureLoggedIn, function (req, res, next) {
 app.get('/config/noticias', ensureLoggedIn, function (req, res, next) {
   interfaceDB.resetArrays();
    var order = req.query.ordenar ? req.query.ordenar : "id_noticia";
-   interfaceDB.crearObjetoMenu(false, function() {
+   interfaceDB.crearObjetoMenu(false, false, function() {
       interfaceDB.crearObjetoTodasNoticias(false, order, function() {
         var objectShow = {}
         objectShow.noticias = interfaceDB.arrayNoticias;
@@ -306,7 +306,7 @@ app.get('/config', ensureLoggedIn, function (req, res, next) {
 // PORTADA falta definir la estructura para los elementos de portada en la BD y renderizarla con jade
 app.get("/",function(req,res){
   interfaceDB.resetArrays();
-  interfaceDB.crearObjetoMenu(true, function() {
+  interfaceDB.crearObjetoMenu(true, true, function() {
     var objectShow = {};
     objectShow.menu = interfaceDB.objetoMenu;
     interfaceDB.crearObjetoTodosClientesOrdenado(true, 'id_cliente',  function(){
@@ -323,7 +323,7 @@ app.get("/",function(req,res){
 
 app.get('/show', function(req, res) {
   interfaceDB.resetArrays();
-  interfaceDB.crearObjetoMenu(true, function() {
+  interfaceDB.crearObjetoMenu(true, true, function() {
     var objectShow = {};
     objectShow.menu = interfaceDB.objetoMenu;
     interfaceDB.crearObjetoCuerpoMunicipio(req.query.id, function(){
@@ -340,7 +340,7 @@ app.get('/show', function(req, res) {
 
 app.get('/news', function(req, res) {
   interfaceDB.resetArrays();
-  interfaceDB.crearObjetoMenu(true, function() {
+  interfaceDB.crearObjetoMenu(true, true, function() {
     var objectShow = {}
     objectShow.menu = interfaceDB.objetoMenu;
     objectShow.municipio = req.query.id_municipio

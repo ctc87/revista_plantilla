@@ -50,11 +50,12 @@
   /** RECUPERACIÓN DE DATOS ZONAS  
    *  Crea un objeto para los menus para recorrelo desde la vista con JADE 
    */
-  interfaceDB.crearObjetoMenu = function(_agrupado, callback) {
-  interfaceDB.objetoMenu = {"arrayMenu":[]};
-  var completed = false;
-  var i = 0;
-    interfaceDB.connection.query('SELECT * from zonas', function(err, rows, fields) {
+  interfaceDB.crearObjetoMenu = function(_agrupado, _menu, callback) {
+    interfaceDB.objetoMenu = {"arrayMenu":[]};
+    var completed = false;
+    var i = 0;
+    var query = _menu ? 'SELECT * FROM `zonas` INNER JOIN `municipios` ON zonas.id_zona = municipios.id_zona INNER JOIN clientes ON municipios.id_municipio = clientes.id_municipio GROUP BY zonas.id_zona;' : 'SELECT * from zonas';
+    interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         for (var key in rows) {
           i++;
@@ -67,9 +68,9 @@
           };
           subObjetoMenu.zona = rows[key].nombre_zona;
           if(_agrupado)
-            subObjetoMenu.municipios = crearArrayMunicipiosMenu(rows[key].id_zona, callback, completed);
+            subObjetoMenu.municipios = crearArrayMunicipiosMenu(rows[key].id_zona, callback, completed, _menu);
           else
-            subObjetoMenu.municipios = crearArrayMunicipios(rows[key].id_zona, callback, completed);
+            subObjetoMenu.municipios = crearArrayMunicipios(rows[key].id_zona, callback, completed, _menu);
           interfaceDB.objetoMenu.arrayMenu.push(subObjetoMenu);
         } 
       } else {
@@ -81,9 +82,10 @@
   /** RECUPERACIÓN DE DATOS MUNICIPIOS  
    * Crea un array con los municipios de la zona pasada por parámetro agrupados de 5 en 5
    */    
-  var crearArrayMunicipiosMenu = function(id_zona, callback, completed) {
+  var crearArrayMunicipiosMenu = function(id_zona, callback, completed, _menu) {
     var arrayOfArrays = [];
-    var query = 'SELECT * from municipios where id_zona = ' + id_zona + ';';
+    var query = _menu ? 'SELECT * FROM `municipios` INNER JOIN clientes ON municipios.id_municipio = clientes.id_municipio where id_zona = ' + id_zona + ' GROUP BY municipios.id_municipio;' : 'SELECT * from municipios where id_zona = ' + id_zona + ';';
+    console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
       // connection.end();
       if (!err) {
@@ -116,7 +118,6 @@
     var arrayMunicipios = [];
     var query = 'SELECT * from municipios where id_zona = ' + id_zona + ';';
     interfaceDB.connection.query(query, function(err, rows, fields) {
-      // connection.end();
       if (!err) {
         for (var key in rows) {
           var municipio = {};
