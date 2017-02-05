@@ -3,6 +3,7 @@ var interfaceDB = require('./baseDeDatos'); // gestión de la base de datos
 var interfaceIMG = require('./imagenes'); // gestión de las imagenes
 var interfaceUSR = require('./loginUsers'); // gestión de los usuarios y login
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
+var funAux = require('./funcionesAuxiliares') // funciones auxiliares
 var app = express();
 
 app.use(express.cookieParser());
@@ -123,7 +124,7 @@ app.post('/uploadUserImage', ensureLoggedIn, function (req, res, next) {
         });    
     });
     var funcionAspectRatio;
-    if(req.body.tamnyo_add == '1x1') {
+    if(req.body.tamnyo_add == '1x1' || req.body.tamnyo_add == '1x2') {
       funcionAspectRatio = interfaceIMG.putAspectRatioMiniumImageClient;
     } else if(req.body.tamnyo_add == '2x4') {
       funcionAspectRatio = interfaceIMG.putAspectRatioThreeOnepointFive; 
@@ -296,7 +297,7 @@ app.get('/config/noticias', ensureLoggedIn, function (req, res, next) {
 
 /** BACKEND falta configurar el inicio de sesion */
 app.get('/config', ensureLoggedIn, function (req, res, next) {
-   interfaceDB.crearObjetoMenu(false, function() {
+   interfaceDB.crearObjetoMenu(false, false,  function() {
     var objectShow = {}
     objectShow.menu = interfaceDB.objetoMenu;
       res.render('indexBackend', objectShow);
@@ -312,10 +313,11 @@ app.get("/",function(req,res){
     interfaceDB.crearObjetoTodosClientesOrdenado(true, 'id_cliente',  function(){
       interfaceDB.crearObjetoTodasNoticias(true, 'id_noticia', function(){
         objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
-        objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
+        // objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
-        res.render('indexSearch', objectShow);
+        objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
+        res.render('indexSearch2', objectShow);
       });
     });
   }); // creamos objeto menu
@@ -329,10 +331,11 @@ app.get('/show', function(req, res) {
     interfaceDB.crearObjetoCuerpoMunicipio(req.query.id, function(){
       interfaceDB.crearobjetoCuerpoNoticias(req.query.id, {action:true}, function(){
         objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
-        objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
+        // objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
-        res.render('indexSearch', objectShow);
+        objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
+        res.render('indexSearch2', objectShow);
       });
     });
   }); // creamos objeto menu

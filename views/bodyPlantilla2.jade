@@ -41,23 +41,25 @@ include mixinsAnunciosNoticias
       #owl-demo2.owl-carousel
         each client, index in clients1x2
             +anuncio1x1(clients1x2, index)
+each grupo, i in clients1x1Noticias 
+  .featured.archive-page.container
+    div
+      .row
+        #main-content.col-md-12
+          each not, index in grupo.noticias
+            +noticias(grupo.noticias, index)
+  - if(grupo.anuncios) {
+    .featured.container
+      .owl-demo.owl-carousel
+        each cli, index2 in grupo.anuncios
+            +anuncio1x1(grupo.anuncios, index2)
+            
+  - }
 
-.featured.container
-  #owl-demo.owl-carousel
-    each client, index in clients1x1
-        +anuncio1x1(clients1x1, index)
-
-        
-#page-content.archive-page.container
-  div
-    .row
-      #main-content.col-md-12
-        each not, index in noticias
-          +noticias(noticias, index)
 
 script.
   $(document).ready(function() {
-  $("#owl-demo").owlCarousel({
+  $(".owl-demo").owlCarousel({
   autoPlay: 3000,
   items : 5,
   itemsDesktop : [600,5],

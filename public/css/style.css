@@ -152,9 +152,17 @@ header{}
 .carousel-inner > .item > a > img {display: block;max-width: 100%;height: auto;margin-left:0;padding-left: 0;}
 
 /* Carousel Header Styles */
+@media (max-width: 768px) { 
 .header-text {position: absolute;top: 10%;left: 1.8%;right: auto;width: 96.66666666666666%;color: #fff;}
-.header-text h2 {font-size: 40px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #DA251D;display:inline-block;color:#fff;}
-.header-text h3 {color: #fff; background-color: rgba(0, 0, 0, 0.5)}
+.header-text h2 {font-size: 20px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #DA251D;display:inline-block;color:#fff;}
+.header-text h3 {font-size: 17px;color: #fff; background-color: rgba(0, 0, 0, 0.5)}
+
+}
+@media (min-width: 768px) { 
+.header-text {position: absolute;top: 10%;left: 1.8%;right: auto;width: 96.66666666666666%;color: #fff;}
+.header-text h2 {font-size: 30px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #DA251D;display:inline-block;color:#fff;}
+.header-text h3 {font-size: 25px;color: #fff; background-color: rgba(0, 0, 0, 0.5)}
+}
 
 /* ---------------------------------------------------------------------------- */
 /* -------------------------------------Content-------------------------------- */

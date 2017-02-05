@@ -70,7 +70,7 @@
           if(_agrupado)
             subObjetoMenu.municipios = crearArrayMunicipiosMenu(rows[key].id_zona, callback, completed, _menu);
           else
-            subObjetoMenu.municipios = crearArrayMunicipios(rows[key].id_zona, callback, completed, _menu);
+            subObjetoMenu.municipios = crearArrayMunicipios(rows[key].id_zona, callback, completed);
           interfaceDB.objetoMenu.arrayMenu.push(subObjetoMenu);
         } 
       } else {
@@ -85,7 +85,6 @@
   var crearArrayMunicipiosMenu = function(id_zona, callback, completed, _menu) {
     var arrayOfArrays = [];
     var query = _menu ? 'SELECT * FROM `municipios` INNER JOIN clientes ON municipios.id_municipio = clientes.id_municipio where id_zona = ' + id_zona + ' GROUP BY municipios.id_municipio;' : 'SELECT * from municipios where id_zona = ' + id_zona + ';';
-    console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
       // connection.end();
       if (!err) {
@@ -137,8 +136,8 @@
    * Resume una noticia para moestrar solo su resumen en JADE.
    */   
   function resumirNoticia(_noticia, _link) {
-    var matching = _noticia.match(/\<p\>(.*)\<\/p\>/)
-    return '<p>' + matching[1] + '<a href="' + _link + '"> Leer m&aacute;s...</a></p>';
+    var matching = _noticia.match(/\<p(?:\s*class\=".*"\s*)?\>(.*)\<\/p\>/)
+    return   matching ? '<p>' + matching[1] + '<a href="' + _link + '"> Leer m&aacute;s...</a></p>' : '<a href="' + _link + '"> Leer m&aacute;s...</a>';
   }
   
   
@@ -425,6 +424,8 @@
    *  Inserta una noticia nueva
    */    
   interfaceDB.insertarNoticia = function(_titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, _portada, callback) {
+    _titular = _titular.replace(/\"/g, '\\\"');
+    _contenido = _contenido.replace(/\'/g, '\\\'');
     var query = 'INSERT INTO `noticias`(`fecha`, `fuente_nombre`, `fuente_enclace`, `titular`, `contenido`, `ruta_foto`, `id_municipio`, `portada`)' +
       ' VALUES ("' + _fecha + 
         '" , "' + _nombreFuente +
@@ -434,7 +435,6 @@
         '\' , "' + _imagen + 
         '" ,' + _municipio + 
         ' ,' + _portada + ');'; 
-        
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(callback)

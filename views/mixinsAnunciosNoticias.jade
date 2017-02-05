@@ -8,8 +8,7 @@ mixin anuncio2x4(clientes, i)
             
 mixin contenidoAnuncio2x4(clientes, i)
       img(src="./#{clientes[i].logo}", alt='#{clientes[i].nombre}')
-      // Static Header
-      .header-text.hidden-xs
+      .header-text
         .col-md-12.text-center
           a(href='#{clientes[i].web}')
             h2 #{clientes[i].nombre}
