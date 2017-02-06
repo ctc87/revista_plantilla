@@ -82,7 +82,12 @@
     }
     
     interfaceIMG.borrarImagen = function(_img_path) {
-      fs.unlink(_img_path);
+      if(_img_path != 'uploads/originalImages/anuncia_aqui.png' && _img_path != 'uploads/anuncia_aqui.png' && _img_path != './uploads/noticias/publirreportaje.jpg') {
+        console.log("borrando " + _img_path);
+        fs.unlink(_img_path);
+      } else  {
+        console.log("no se borra " + _img_path ) 
+      }
     }
   
   return interfaceIMG;

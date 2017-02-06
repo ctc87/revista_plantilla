@@ -8,6 +8,8 @@
     id_noticia: ""
   }
   
+  interfaceDB.numero = {};
+  
   interfaceDB.arrayClientes = [];
   interfaceDB.arrayClientes2x4 = [];
   interfaceDB.arrayClientes1x2 = [];
@@ -64,9 +66,11 @@
           }
           var subObjetoMenu = { // estructura del objeto
             "zona":"",
+            "id_zona":"", 
             "municipios":[]
           };
           subObjetoMenu.zona = rows[key].nombre_zona;
+          subObjetoMenu.id_zona = rows[key].id_zona;
           if(_agrupado)
             subObjetoMenu.municipios = crearArrayMunicipiosMenu(rows[key].id_zona, callback, completed, _menu);
           else
@@ -145,9 +149,14 @@
    * Crea un objeto con las noticias de un municipio determinado
    * --------------------> FALTA CAMBIAR PARA HACERLO POR ZONAS CON LA MISMA FUNCIÓN
    */    
-  interfaceDB.crearobjetoCuerpoNoticias = function(_id_municipio, _noResumen,  callback) {
-    var query = 'Select * FROM `noticias` ' +  
-    'where id_municipio = ' + _id_municipio + ';';
+  interfaceDB.crearobjetoCuerpoNoticias = function(_id, _noResumen,  callback) {
+    var where;
+    if(_id.id_zona) {
+      where = 'inner join municipios on noticias.id_municipio = municipios.id_municipio where id_zona = ' + _id.id_zona + ';';
+    } else if (_id.id_municipio) {
+      where = 'where id_municipio = ' + _id.id_municipio + ';';
+    }
+    var query = 'Select * FROM `noticias` ' +  where;
     var completed = false;
     var i = 0;
     interfaceDB.connection.query(query, function(err, rows, fields) {
@@ -249,7 +258,6 @@
   
   /** RECUPERACIÓN DE DATOS CLIENTES  
    * Crea un objeto con tods los clientes para el backend
-   * --------------------> FALTA CAMBIAR PARA HACERLO POR ZONAS CON LA MISMA FUNCIÓN
    */  
     interfaceDB.crearObjetoTodosClientesOrdenado = function(_portada, _order, callback) {
     var i = 0;
@@ -320,12 +328,17 @@
    * Crea un objeto con tdos los clientes clasificados por sus tamaños de ADS
    * --------------------> FALTA CAMBIAR PARA HACERLO POR ZONAS CON LA MISMA FUNCIÓN
    */   
-  interfaceDB.crearObjetoCuerpoMunicipio = function(_id_municipio, callback) {
+  interfaceDB.crearObjetoCuerpoMunicipio = function(_id, callback) {
     var completed = false;
     var i = 0;
+    var where;
+    if(_id.id_zona) {
+      where = 'inner join municipios on clientes.id_municipio = municipios.id_municipio where id_zona = ' + _id.id_zona + ';';
+    } else if (_id.id_municipio) {
+      where = 'where id_municipio = ' + _id.id_municipio + ';';
+    }
     var query = 'Select clientes.id_cliente, clientes.nombre, clientes.portada, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato From `clientes` inner join logos on ' +  
-    'clientes.id_cliente = logos.id_cliente ' +
-    'where id_municipio = ' + _id_municipio + ';';
+    'clientes.id_cliente = logos.id_cliente ' + where;
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(rows.length < 1) {
@@ -381,6 +394,22 @@
       }
     });
   }
+  
+  /** RECUPERACIÓN DE DATOS CLIENTE
+   * obtiene el id de un cliente a partir de su link uy su id municipio
+   */     
+  interfaceDB.obtenerIdClienteInicial = function(_web, _id_municipio, callback) {
+    var query = 'Select id_cliente From `clientes` where web = "' + _web + '" and id_municipio = ' + _id_municipio + ';';
+    
+     interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        interfaceDB.objetoIds.id_cliente = rows[0].id_cliente;
+        callback();
+      } else {
+        console.log('Error en obtener el id cliente.');
+      }
+    });
+  }
 
   /** RECUPERACIÓN DE DATOS MUNICIPIO
    * obtiene el id de un municipio a partir de su nombre
@@ -398,6 +427,129 @@
   };
   
 /*******************INSERCIÓN DE DATOS*******************/
+
+ /** FUNCION PARA INSERTAR DATOS INICIALES
+  * Inserta datos iniciales
+  * 
+  */
+  interfaceDB.datosIniciales = function(_id_municipio) {
+    if(interfaceDB.numero.anuncios.de1x1 <= 0) {
+      interfaceDB.insertarClienteInicial("1x1", _id_municipio, function(){
+          if(interfaceDB.numero.anuncios.de1x2 <= 0){
+             interfaceDB.insertarClienteInicial("1x2", _id_municipio, function(){
+              if(interfaceDB.numero.anuncios.de2x4 <= 0) {
+                interfaceDB.insertarClienteInicial("2x4", _id_municipio, function(){
+                  // console.log("ins");
+                });
+              }
+             });
+          } else {
+            if(interfaceDB.numero.anuncios.de2x4 <= 0) {
+              interfaceDB.insertarClienteInicial("2x4", _id_municipio, function(){
+                // console.log("ins");
+              });
+            }
+          }
+        })
+    } else {
+      if(interfaceDB.numero.anuncios.de1x2 <= 0){
+         interfaceDB.insertarClienteInicial("1x2", _id_municipio, function(){
+          if(interfaceDB.numero.anuncios.de2x4 <= 0) {
+            interfaceDB.insertarClienteInicial("2x4", _id_municipio, function(){
+              // console.log("ins");
+            });
+          }
+         });
+      } else {
+        if(interfaceDB.numero.anuncios.de2x4 <= 0) {
+          interfaceDB.insertarClienteInicial("2x4", _id_municipio, function(){
+            // console.log("ins");
+          });
+        }
+      }
+    }
+    
+    if(interfaceDB.numero.noticias <= 0) {
+      console.log("not menor que 0")
+      interfaceDB.insertarNoticia(
+        "Tú Publi Reportaje Aquí",
+        '<p>Contrata tu publireportaje para anunciarte en este sitio.</p>' ,
+        "./uploads/noticias/publirreportaje.jpg",
+        "#",
+        "publireportaje",
+        "2017-02-05 23:15",
+        _id_municipio,
+        false,
+        function() {
+          // console.log("insertada noticia inicial");
+        }
+      );
+    }
+  }
+  
+  /** INSERTAR CLIENTE INICIAL
+   * Inserta un cliente inicial de prueba de tamaño t
+   */ 
+    interfaceDB.insertarClienteInicial  = function(_t, _id_municipio, callback) {
+      interfaceDB.insertarCliente(" ", _id_municipio, 666666666, "email@email.com", "#", false, function(){
+        interfaceDB.obtenerIdClienteInicial("#", _id_municipio, function(){
+          interfaceDB.insertarLogo('uploads/anuncia_aqui.png', "anuncia_aqui.png", "png", _t, interfaceDB.objetoIds.id_cliente, callback)
+        });
+      }); 
+    }
+    
+  /** CREAR OBJETO NUM NOTICIAS Y ANUNCIOS 
+   * Funcion que crea el objeto con el numero de anuncios y noticias de un municipio
+   *  
+   */
+  
+  interfaceDB.crearObjetoNumAnunciosNoticias = function(_id_municipio, callback) {
+    interfaceDB.numero.anuncios = {};
+    var queryAnunciosBase = 'SELECT COUNT( clientes.id_cliente ) AS num ' +
+    'FROM  `clientes`' + 
+    'INNER JOIN  `logos` ON clientes.id_cliente = logos.id_cliente ' +
+    'WHERE clientes.id_municipio =' + _id_municipio +
+    ' AND logos.tamanyo_formato = '; 
+    
+    var queryNoticias = 'SELECT COUNT( id_noticia ) AS num ' +
+    'FROM noticias ' +
+    'WHERE id_municipio = ' + _id_municipio;
+    console.log(queryAnunciosBase + "'2x4';");
+    interfaceDB.connection.query(queryAnunciosBase + "'2x4';", function(err, rows, fields) {
+      if (!err) {
+        interfaceDB.numero.anuncios.de2x4 = rows[0].num;
+          interfaceDB.connection.query(queryAnunciosBase + "'1x2';", function(err, rows, fields) {
+            if (!err) {
+              interfaceDB.numero.anuncios.de1x2 = rows[0].num;
+                interfaceDB.connection.query(queryAnunciosBase + "'1x1';", function(err, rows, fields) {
+                  if (!err) {
+                    interfaceDB.numero.anuncios.de1x1 = rows[0].num;
+                        interfaceDB.connection.query(queryNoticias, function(err, rows, fields) {
+                          if (!err) {
+                            interfaceDB.numero.noticias = rows[0].num
+                            // console.log('contado');
+                            console.log(interfaceDB.numero);
+                            callback();
+                          } else {
+                            console.log('Error contando noticias.');
+                          }
+                        });
+                  } else {
+                    console.log('Error contando anuncis 1x1.');
+                  }
+                });
+            } else {
+              console.log('Error contando anuncis 1x2.');
+            }
+          });
+      } else {
+        console.log('Error contando anuncis 2x4.');
+      }
+    });
+    
+  }
+  
+
 
   /** INSERCIÓN DE DATOS CLIENTES  
    *  Inserta un cliente nuevo
@@ -455,7 +607,6 @@
         '" , "' + _extension + 
         '" , "' + _tamanyo_formato + 
         '" ,' + _id_cliente + ');';
-        
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(callback)

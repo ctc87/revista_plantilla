@@ -2,6 +2,11 @@
     // AuxFunciones.passport = require('passport');
     AuxFunciones.NUMERO_ANUNCIOS_1X1_FILA = 10;
     
+    AuxFunciones.Explicaciones = {
+        quienesSomos : " QUIENES SOMOS SOMOS Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan.Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non.ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan",
+        revista : " ESTE PRODUCTO Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan.Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non.ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan"
+    };
+    
     AuxFunciones.partirArrayClientes1x1 = function(_array1x1, _arrayNoticias) { // obtenemos A 
         var arrayDeArrays = [];
         var objetoNoticasPublicidad = {};
@@ -14,7 +19,7 @@
             }
             arrayActual.push(_array1x1[i]);
         }
-        if(_arrayNoticias.length < arrayDeArrays.length)
+        if(_arrayNoticias.length <= arrayDeArrays.length)
             return this.menosNoticasQueClientes(_arrayNoticias.length, _array1x1, _arrayNoticias);
         return this.dosNoticiaPorTiraDeAnuncios(arrayDeArrays, _arrayNoticias);
         

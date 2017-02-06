@@ -78,7 +78,10 @@ app.post('/config/uploadNoticiaImage', ensureLoggedIn, function(req, res, next) 
     });
     interfaceIMG.guardarImagen(false, req.file.path, target_path, interfaceIMG.putAspectRatioThreeOnepointFive,
     function(){
+      interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
+        interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
         res.redirect("/config/noticias#insertar");
+      });
     },
     function(){
       res.render('error' + err);   // Manejar aqui error de escritura 
@@ -118,7 +121,9 @@ app.post('/uploadUserImage', ensureLoggedIn, function (req, res, next) {
               req.body.tamnyo_add,
               interfaceDB.objetoIds.id_cliente, 
               function(){
-                // console.log("llegue"); // finalizada inserción                  
+                interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function() {
+                  interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);               
+                });
               });
           });
         });    
@@ -132,7 +137,10 @@ app.post('/uploadUserImage', ensureLoggedIn, function (req, res, next) {
     var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
     interfaceIMG.guardarImagen(true, req.file.path, target_path, funcionAspectRatio,
     function(){
-      res.redirect("/config/clientes#insertar");
+      interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
+        interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
+        res.redirect("/config/clientes#insertar");
+      });
     },
     function(){
       res.render('error' + err);   // Manejar aqui error de escritura 
@@ -190,7 +198,10 @@ app.post('/config/modificarCliente', ensureLoggedIn, function (req, res, next) {
             var originalImage = req.body.old_logo.replace("uploads/", "uploads/originalImages/");
             interfaceDB.modificarTamanyoLogo(req.body.tamnyo_add, req.body.id_cliente, function(){
               funcionAspectRatio('' + originalImage, '' + req.body.old_logo);
-              res.redirect("/config/clientes#modificar");
+              interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
+                interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
+                res.redirect("/config/clientes#modificar");
+              });
             });
             // gestionar el error de falta de imagen
             // console.log(req.body)
@@ -231,8 +242,11 @@ app.post('/config/modificarNoticia', ensureLoggedIn, function (req, res, next) {
         interfaceDB.objetoIds.id_municipio,
         req.body.portada,  
         function(){
-          res.redirect("/config/noticias#modificar");
-        });  
+          interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
+            interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
+            res.redirect("/config/noticias#modificar");
+        });
+      });  
     });
   });
 });
@@ -328,8 +342,8 @@ app.get('/show', function(req, res) {
   interfaceDB.crearObjetoMenu(true, true, function() {
     var objectShow = {};
     objectShow.menu = interfaceDB.objetoMenu;
-    interfaceDB.crearObjetoCuerpoMunicipio(req.query.id, function(){
-      interfaceDB.crearobjetoCuerpoNoticias(req.query.id, {action:true}, function(){
+    interfaceDB.crearObjetoCuerpoMunicipio({id_municipio : req.query.id}, function(){
+      interfaceDB.crearobjetoCuerpoNoticias({id_municipio:req.query.id}, {action:true}, function(){
         objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
         // objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
@@ -341,6 +355,50 @@ app.get('/show', function(req, res) {
   }); // creamos objeto menu
 });
 
+app.get('/showZona', function(req, res) {
+  interfaceDB.resetArrays();
+  interfaceDB.crearObjetoMenu(true, true, function() {
+    var objectShow = {};
+    objectShow.menu = interfaceDB.objetoMenu;
+    interfaceDB.crearObjetoCuerpoMunicipio({id_zona : req.query.id}, function(){
+      interfaceDB.crearobjetoCuerpoNoticias({id_zona:req.query.id}, {action:true}, function(){
+        objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
+        // objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
+        objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
+        objectShow.noticias = interfaceDB.arrayNoticias;
+        objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
+        res.render('indexSearch2', objectShow);
+      });
+    });
+  }); // creamos objeto menu
+});
+
+
+
+
+app.get('/quienesSomos', function(req, res) {
+  interfaceDB.resetArrays();
+  interfaceDB.crearObjetoMenu(true, true, function() {
+    var objectShow = {};
+    objectShow.menu = interfaceDB.objetoMenu;
+    objectShow.titulo = "¿Quiénes somos?";
+    objectShow.contenido = funAux.Explicaciones.quienesSomos;
+    res.render('explicacion', objectShow);
+  }); // creamos objeto menu
+});
+
+app.get('/laRevista', function(req, res) {
+  interfaceDB.resetArrays();
+  interfaceDB.crearObjetoMenu(true, true, function() {
+    var objectShow = {};
+    objectShow.menu = interfaceDB.objetoMenu;
+    objectShow.titulo = "Que es este producto";
+    objectShow.contenido = funAux.Explicaciones.revista;
+    res.render('explicacion', objectShow);
+  }); // creamos objeto menu
+});
+
+
 app.get('/news', function(req, res) {
   interfaceDB.resetArrays();
   interfaceDB.crearObjetoMenu(true, true, function() {
@@ -348,14 +406,17 @@ app.get('/news', function(req, res) {
     objectShow.menu = interfaceDB.objetoMenu;
     objectShow.municipio = req.query.id_municipio
     objectShow.id_noticia = req.query.id_noticia
-    interfaceDB.crearObjetoCuerpoMunicipio(req.query.id_municipio, function(){
-      interfaceDB.crearobjetoCuerpoNoticias(req.query.id_municipio, {action:false, id_noticia:objectShow.id_noticia}, function(){
-        objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
-        objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
-        objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
-        objectShow.noticias = interfaceDB.arrayNoticias;
-        res.render('indexNews', objectShow);
-      });
+    interfaceDB.crearObjetoCuerpoMunicipio({id_municipio: req.query.id_municipio}, function(){
+      interfaceDB.crearobjetoCuerpoNoticias(
+        {id_municipio : req.query.id_municipio},
+        {action:false, id_noticia:objectShow.id_noticia}, 
+        function(){
+          objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
+          objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
+          objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
+          objectShow.noticias = interfaceDB.arrayNoticias;
+          res.render('indexNews', objectShow);
+        });
     });
   }); // creamos objeto menu
 });
