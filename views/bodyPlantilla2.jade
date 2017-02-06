@@ -21,19 +21,19 @@ include mixinsAnunciosNoticias
           span.glyphicon.glyphicon-chevron-right
     #main-content.col-md-4
       .box
-        a(href='/news?id_municipio=#{noticias[0].id_municipio}&id_noticia=#{noticias[0].id_noticia}')
-          h2.vid-name #{noticias[0].titular}
+        a(href='/news?id_municipio=#{publireportaje.id_municipio}&id_noticia=#{publireportaje.id_noticia}')
+          h2.vid-name #{publireportaje.titular}
         .info
           h5
             | Fuente 
-            a(href='#{noticias[0].fuente_enclace}') #{noticias[0].fuente_nombre}
+            a(href='#{publireportaje.fuente_enclace}') #{publireportaje.fuente_nombre}
           span
             i.fa.fa-calendar
-            |  #{noticias[0].fecha}
+            |  #{publireportaje.fecha}
         .wrap-vid
           .zoom-container
             .zoom-caption
-            img(src='#{noticias[0].imagen}')
+            img(src='#{publireportaje.imagen}')
             
 .featured.container
   .row

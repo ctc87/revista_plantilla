@@ -30,6 +30,7 @@
     
     /** Parte los anuncios en sub arrays para colocar un array de anuncios bajo cada noticia el ultimo se lleva el resto */
     AuxFunciones.menosNoticasQueClientes = function(_numNoticias, _arrayClientes, _arrayNoticias) {
+        console.log(_numNoticias)
         var arrayDeArrays = [];
         var objetoNoticasPublicidad = {};
         var numAnunciosPorArray = Math.floor(_arrayClientes.length / _numNoticias);

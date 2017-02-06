@@ -47,6 +47,14 @@ mixin cliente(clientes, index)
         td #{clientes[index].mail}
         td #{clientes[index].telefono}
         td #{clientes[index].formato}
+        
+        - var icono =  clientes[index].activo ? "glyphicon-ok" : "glyphicon-remove" ;
+        - var color =  clientes[index].activo ? "btn-success" : "btn-danger" ;
+        
+        td 
+            a(href="/config/activarDesactivarCliente?id_cliente=#{clientes[index].id_cliente}&activar=#{!clientes[index].activo}")
+                button.btn(class="#{color}" type='button', aria-label='Left Align')
+                    span.glyphicon(aria-hidden='true' class="#{icono}") 
         td 
             button.btn.btn-info(type='button', aria-label='Left Align' onmouseover="document.getElementById('#{clientes[index].id_cliente}').style.display='block';", onmouseout="document.getElementById('#{clientes[index].id_cliente}').style.display='none';") 
                 span.glyphicon.glyphicon-picture(aria-hidden='true')
@@ -82,6 +90,7 @@ mixin cliente(clientes, index)
          a(href="/config/clientes?ordenar=telefono#modificar") Telefono
         th  
          a(href="/config/clientes?ordenar=tamanyo_formato#modificar") Anuncio
+        th Activo
         th Logo
         th Web
         th Mod

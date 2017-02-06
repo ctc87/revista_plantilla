@@ -32,6 +32,46 @@
                     input(type='radio', name='portada', value='false', checked="checked")
                     | No
               - }
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+              - if(noticiaModificar.publirep) {
+                  label.radio.inline.control-label Publi Reportaje
+                  label.radio-inline
+                    input(type='radio', name='publirep', value='true', checked="checked")
+                    | Si
+                  label.radio-inline
+                    input(type='radio', name='publirep', value='false')
+                    | No
+              - } else {
+                  label.radio.inline.control-label Publi Reportaje
+                  label.radio-inline
+                    input(type='radio', name='publirep', value='true')
+                    | Si
+                  label.radio-inline
+                    input(type='radio', name='publirep', value='false', checked="checked")
+                    | No
+              - }
+       .col-sm-12
+           .col-sm-2
+           .form-group.col-sm-8
+              - if(noticiaModificar.portadaZona) {
+                  label.radio.inline.control-label Portada Zona
+                  label.radio-inline
+                    input(type='radio', name='portadaZona', value='true', checked="checked")
+                    | Si
+                  label.radio-inline
+                    input(type='radio', name='portadaZona', value='false')
+                    | No
+              - } else {
+                  label.radio.inline.control-label Portada Zona
+                  label.radio-inline
+                    input(type='radio', name='portadaZona', value='true')
+                    | Si
+                  label.radio-inline
+                    input(type='radio', name='portadaZona', value='false', checked="checked")
+                    | No
+              - }
         .col-sm-12
           .col-sm-2
           .col-sm-8

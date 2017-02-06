@@ -15,6 +15,7 @@
   interfaceDB.arrayClientes1x2 = [];
   interfaceDB.arrayClientes1x1 = [];
   interfaceDB.arrayNoticias = [];
+  interfaceDB.publireportaje;
   
   /** RESETEO DE LOS ARRAYS */
   interfaceDB.resetArrays = function() {
@@ -23,6 +24,7 @@
     interfaceDB.arrayClientes1x2 = [];
     interfaceDB.arrayClientes1x1 = [];
     interfaceDB.arrayNoticias = [];
+    interfaceDB.publireportaje = {};
   }
   
 /*******************CONEXION*******************/
@@ -152,9 +154,9 @@
   interfaceDB.crearobjetoCuerpoNoticias = function(_id, _noResumen,  callback) {
     var where;
     if(_id.id_zona) {
-      where = 'inner join municipios on noticias.id_municipio = municipios.id_municipio where id_zona = ' + _id.id_zona + ';';
+      where = 'inner join municipios on noticias.id_municipio = municipios.id_municipio where activo = true and noticias.portadaZona = true and id_zona = ' + _id.id_zona + ';';
     } else if (_id.id_municipio) {
-      where = 'where id_municipio = ' + _id.id_municipio + ';';
+      where = 'where activo = true and id_municipio = ' + _id.id_municipio + ';';
     }
     var query = 'Select * FROM `noticias` ' +  where;
     var completed = false;
@@ -175,17 +177,37 @@
           } else {
             var contenido = _noResumen.id_noticia != rows[key].id_noticia ? resumirNoticia(rows[key].contenido,link) : rows[key].contenido;
           }
-          interfaceDB.arrayNoticias.push({
-            id_noticia: rows[key].id_noticia,
-            id_municipio: rows[key].id_municipio,
-            titular: rows[key].titular,
-            fecha: rows[key].fecha,
-            imagen: rows[key].ruta_foto,
-            fuente_enclace: rows[key].fuente_enclace,
-            fuente_nombre: rows[key].fuente_nombre,
-            portada: rows[key].portada,
-            contenido: contenido
-          });
+          if(rows[key].publirep) {
+            interfaceDB.publireportaje = {
+              id_noticia: rows[key].id_noticia,
+              id_municipio: rows[key].id_municipio,
+              titular: rows[key].titular,
+              fecha: rows[key].fecha,
+              imagen: rows[key].ruta_foto,
+              fuente_enclace: rows[key].fuente_enclace,
+              fuente_nombre: rows[key].fuente_nombre,
+              publirep: rows[key].publirep,
+              portada: rows[key].portada,
+              portadaZona: rows[key].portadaZona,
+              contenido: contenido
+            }
+          } else {
+            interfaceDB.arrayNoticias.push({
+              id_noticia: rows[key].id_noticia,
+              id_municipio: rows[key].id_municipio,
+              titular: rows[key].titular,
+              fecha: rows[key].fecha,
+              imagen: rows[key].ruta_foto,
+              fuente_enclace: rows[key].fuente_enclace,
+              fuente_nombre: rows[key].fuente_nombre,
+              publirep: rows[key].publirep,
+              portada: rows[key].portada,
+              portadaZona: rows[key].portadaZona,
+              contenido: contenido
+            });
+         }
+        if(interfaceDB.arrayNoticias.length == 0)
+           interfaceDB.arrayNoticias.push(interfaceDB.publireportaje);
         } 
         if(completed)
           callback();
@@ -200,10 +222,11 @@
    */    
   interfaceDB.crearObjetoTodasNoticias = function(_portada, _order, callback) {
     var query = 'Select * FROM `noticias` inner join `municipios` on noticias.id_municipio = municipios.id_municipio ';
-    query += _portada ? 'where portada=true ' : ' ';
+    query += _portada ? 'where portada=true and activo = true ' : ' ';
     query += 'ORDER BY ' + _order + ';';
     var completed = false;
     var i = 0;
+    console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(rows.length < 1) {
@@ -223,7 +246,10 @@
               imagen: rows[key].ruta_foto,
               fuente_enclace: rows[key].fuente_enclace,
               fuente_nombre: rows[key].fuente_nombre,
+              publirep: rows[key].publirep,
               portada: rows[key].portada,
+              portadaZona: rows[key].portadaZona,
+              activo: rows[key].activo,
               contenido: rows[key].contenido
             });
           } 
@@ -235,17 +261,37 @@
             }
             var link = '/news?id_municipio=' + rows[key].id_municipio + '&id_noticia=' + rows[key].id_noticia;
             var contenido = resumirNoticia(rows[key].contenido,link)
-            interfaceDB.arrayNoticias.push({
-              id_noticia: rows[key].id_noticia,
-              id_municipio: rows[key].id_municipio,
-              titular: rows[key].titular,
-              fecha: rows[key].fecha,
-              imagen: rows[key].ruta_foto,
-              fuente_enclace: rows[key].fuente_enclace,
-              fuente_nombre: rows[key].fuente_nombre,
-              portada: rows[key].portada,
-              contenido: contenido
-            });
+            if(rows[key].publirep && rows[key].portada) {
+              interfaceDB.publireportaje = {
+                id_noticia: rows[key].id_noticia,
+                id_municipio: rows[key].id_municipio,
+                titular: rows[key].titular,
+                fecha: rows[key].fecha,
+                imagen: rows[key].ruta_foto,
+                fuente_enclace: rows[key].fuente_enclace,
+                fuente_nombre: rows[key].fuente_nombre,
+                publirep: rows[key].publirep,
+                portada: rows[key].portada,
+                portadaZona: rows[key].portadaZona,
+                contenido: contenido
+              }
+            } else {
+              interfaceDB.arrayNoticias.push({
+                id_noticia: rows[key].id_noticia,
+                id_municipio: rows[key].id_municipio,
+                titular: rows[key].titular,
+                fecha: rows[key].fecha,
+                imagen: rows[key].ruta_foto,
+                fuente_enclace: rows[key].fuente_enclace,
+                fuente_nombre: rows[key].fuente_nombre,
+                publirep: rows[key].publirep,
+                portada: rows[key].portada,
+                portadaZona: rows[key].portadaZona,
+                contenido: contenido
+              });
+            }
+            if(interfaceDB.arrayNoticias.length == 0)
+               interfaceDB.arrayNoticias.push(interfaceDB.publireportaje);
           } 
         }
         if(completed)
@@ -261,11 +307,11 @@
    */  
     interfaceDB.crearObjetoTodosClientesOrdenado = function(_portada, _order, callback) {
     var i = 0;
-    var query = 'Select clientes.id_cliente, clientes.portada, municipios.nombre_municipio, clientes.nombre, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato ' +
+    var query = 'Select clientes.id_cliente, clientes.activo, clientes.portada, municipios.nombre_municipio, clientes.nombre, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato ' +
     'From `clientes` inner join logos on ' +  
     'clientes.id_cliente = logos.id_cliente ' +
     'inner join `municipios` on clientes.id_municipio = municipios.id_municipio ';
-    query += _portada ? ' where clientes.portada = true ' : ' ';
+    query += _portada ? ' where clientes.portada = true and activo = true ' : ' ';
     query += 'ORDER BY ' + _order + ';';
      interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
@@ -284,6 +330,7 @@
               mail: rows[key].mail,
               telefono: rows[key].telefono,
               portada: rows[key].portada,
+              activo: rows[key].activo,
               web: rows[key].web
             });
             if(!(i<rows.length)) {
@@ -308,6 +355,7 @@
             mail: rows[key].mail,
             telefono: rows[key].telefono,
             portada: rows[key].portada,
+            activo: rows[key].activo,
             web: rows[key].web
           });
             i++;
@@ -333,9 +381,9 @@
     var i = 0;
     var where;
     if(_id.id_zona) {
-      where = 'inner join municipios on clientes.id_municipio = municipios.id_municipio where id_zona = ' + _id.id_zona + ';';
+      where = 'inner join municipios on clientes.id_municipio = municipios.id_municipio where activo = true and id_zona = ' + _id.id_zona + ';';
     } else if (_id.id_municipio) {
-      where = 'where id_municipio = ' + _id.id_municipio + ';';
+      where = 'where activo = true and id_municipio = ' + _id.id_municipio + ';';
     }
     var query = 'Select clientes.id_cliente, clientes.nombre, clientes.portada, clientes.mail, clientes.telefono, clientes.web, logos.ruta, logos.tamanyo_formato From `clientes` inner join logos on ' +  
     'clientes.id_cliente = logos.id_cliente ' + where;
@@ -375,10 +423,7 @@
     
   }
 
-  
-  interfaceDB.crearObjetoCuerpoZona = function(_id_zona, callback) {
-  }
-  
+
   /** RECUPERACIÓN DE DATOS CLIENTE
    * obtiene el id de un cliente a partir de su nombre
    */     
@@ -422,6 +467,22 @@
         callback();
       } else {
         console.log('Error en obtener el id municipio.');
+      }
+    });
+  };
+  
+
+  /** RECUPERACIÓN DE DATOS ZONA
+   * obtiene el id de una zona a partir de un id de municipio
+   */   
+  interfaceDB.obtenerIdZonaIdMunicipio = function(_id, callback) {
+    var query = 'Select id_zona From `municipios` where id_municipio = "' + _id + '";';
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        interfaceDB.objetoIds.id_zona = rows[0].id_zona;
+        callback();
+      } else {
+        console.log('Error en obtener el id zona.');
       }
     });
   };
@@ -470,6 +531,7 @@
     }
     
     if(interfaceDB.numero.noticias <= 0) {
+      var portadaZona = interfaceDB.numero.noticiasZona <= 0;
       console.log("not menor que 0")
       interfaceDB.insertarNoticia(
         "Tú Publi Reportaje Aquí",
@@ -480,6 +542,8 @@
         "2017-02-05 23:15",
         _id_municipio,
         false,
+        portadaZona,
+        true,
         function() {
           // console.log("insertada noticia inicial");
         }
@@ -491,8 +555,8 @@
    * Inserta un cliente inicial de prueba de tamaño t
    */ 
     interfaceDB.insertarClienteInicial  = function(_t, _id_municipio, callback) {
-      interfaceDB.insertarCliente(" ", _id_municipio, 666666666, "email@email.com", "#", false, function(){
-        interfaceDB.obtenerIdClienteInicial("#", _id_municipio, function(){
+      interfaceDB.insertarCliente(" ", _id_municipio, 666666666, "email@email.com", "#" + _t, false, function(){
+        interfaceDB.obtenerIdClienteInicial("#" + _t, _id_municipio, function(){
           interfaceDB.insertarLogo('uploads/anuncia_aqui.png', "anuncia_aqui.png", "png", _t, interfaceDB.objetoIds.id_cliente, callback)
         });
       }); 
@@ -508,12 +572,20 @@
     var queryAnunciosBase = 'SELECT COUNT( clientes.id_cliente ) AS num ' +
     'FROM  `clientes`' + 
     'INNER JOIN  `logos` ON clientes.id_cliente = logos.id_cliente ' +
-    'WHERE clientes.id_municipio =' + _id_municipio +
+    'WHERE clientes.id_municipio =' + _id_municipio + ' and activo = true' +
     ' AND logos.tamanyo_formato = '; 
     
     var queryNoticias = 'SELECT COUNT( id_noticia ) AS num ' +
     'FROM noticias ' +
-    'WHERE id_municipio = ' + _id_municipio;
+    'WHERE id_municipio = ' + _id_municipio + ' and activo = true';
+    
+    
+    // SELECT COUNT( id_noticia ) AS num 
+    // FROM noticias inner join municipios on noticias.id_municipio = municipios.id_municipio
+    // WHERE portadaZona = true;
+    
+    
+    
     console.log(queryAnunciosBase + "'2x4';");
     interfaceDB.connection.query(queryAnunciosBase + "'2x4';", function(err, rows, fields) {
       if (!err) {
@@ -526,10 +598,22 @@
                     interfaceDB.numero.anuncios.de1x1 = rows[0].num;
                         interfaceDB.connection.query(queryNoticias, function(err, rows, fields) {
                           if (!err) {
-                            interfaceDB.numero.noticias = rows[0].num
-                            // console.log('contado');
-                            console.log(interfaceDB.numero);
-                            callback();
+                            interfaceDB.numero.noticias = rows[0].num;
+                            interfaceDB.obtenerIdZonaIdMunicipio(_id_municipio, function(){
+                              var queryNoticiasZona = 'SELECT COUNT( noticias.id_noticia ) AS num ' +
+                              'FROM noticias inner join municipios on noticias.id_municipio = municipios.id_municipio ' +
+                              'WHERE municipios.id_zona = ' + interfaceDB.objetoIds.id_zona + ' and portadaZona = true and activo = true';
+                              // console.log(queryNoticiasZona)
+                              interfaceDB.connection.query(queryNoticiasZona, function(err, rows, fields) {
+                                if (!err) {
+                                  interfaceDB.numero.noticiasZona = rows[0].num;
+                                  console.log(interfaceDB.numero);
+                                  callback();
+                                } else {
+                                  console.log('Error contando noticias de zona.');
+                                }
+                              });
+                            });
                           } else {
                             console.log('Error contando noticias.');
                           }
@@ -555,13 +639,14 @@
    *  Inserta un cliente nuevo
    */  
   interfaceDB.insertarCliente  = function(_nombre, _municipio, _telefono, _mail, _web, _portada, callback) {
-    var query = 'INSERT INTO `clientes` (`nombre`, `id_municipio`, `telefono`, `mail`, `web`, `portada`) ' +  
+    var query = 'INSERT INTO `clientes` (`nombre`, `id_municipio`, `telefono`, `mail`, `web`, `activo`,  `portada`) ' +  
       'VALUES ("'  + _nombre + 
               '",' + _municipio + 
               ',' + _telefono + 
               ',"' + _mail +  
               '","' + _web + 
-              '",' + _portada + ');';
+              '", true' + 
+              ',' + _portada + ');';
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         callback();
@@ -575,10 +660,10 @@
   /** INSERCIÓN DE DATOS NOTICIAS  
    *  Inserta una noticia nueva
    */    
-  interfaceDB.insertarNoticia = function(_titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, _portada, callback) {
+  interfaceDB.insertarNoticia = function(_titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, _portada, _portadaZona, _publirep, callback) {
     _titular = _titular.replace(/\"/g, '\\\"');
     _contenido = _contenido.replace(/\'/g, '\\\'');
-    var query = 'INSERT INTO `noticias`(`fecha`, `fuente_nombre`, `fuente_enclace`, `titular`, `contenido`, `ruta_foto`, `id_municipio`, `portada`)' +
+    var query = 'INSERT INTO `noticias`(`fecha`, `fuente_nombre`, `fuente_enclace`, `titular`, `contenido`, `ruta_foto`, `id_municipio`, `publirep`, `portadaZona`, `activo`, `portada`)' +
       ' VALUES ("' + _fecha + 
         '" , "' + _nombreFuente +
         '" , "' + _enlaceFuente + 
@@ -586,6 +671,9 @@
         '" , \'' + _contenido + 
         '\' , "' + _imagen + 
         '" ,' + _municipio + 
+        ' ,' + _publirep + 
+        ' ,' + _portadaZona + 
+        ' , true' + 
         ' ,' + _portada + ');'; 
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
@@ -680,7 +768,7 @@
   /** MODIFICAR DE DATOS NOTICIAS  
    *  Modifica una noticia pasada como id
    */    
-  interfaceDB.modificarNoticia = function(_id_noticia, _titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, _portada, callback) {
+  interfaceDB.modificarNoticia = function(_id_noticia, _titular, _contenido, _imagen, _enlaceFuente, _nombreFuente, _fecha, _municipio, _portada, _portadaZona, _publirep, callback) {
     var query = 'UPDATE `noticias` SET ' +
       ' fecha = "' + _fecha + 
         '" , fuente_nombre = "' + _nombreFuente +
@@ -688,8 +776,10 @@
         '" , titular = "' + _titular + 
         '" , contenido = \'' +  _contenido +
         '\' , ruta_foto = "' + _imagen + 
-        '" , id_municipio = ' + _municipio + 
-        '" , porta = ' + _portada + 
+        '" , id_municipio = ' + _municipio +
+        ' , publirep = ' + _publirep + 
+        ' , portada = ' + _portada + 
+        ' , portadaZona = ' + _portadaZona + 
         ' WHERE id_noticia =  ' + _id_noticia + ';'; 
     // console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
@@ -701,6 +791,42 @@
       }
     });
   }
+  
+    
+  /** ACTIVAR / DESACTIVAR NOTICIAS  
+   *  Activa / Desactiva una noticia pasada como id
+   */    
+  interfaceDB.activarDesactivarNoticia = function(_id_noticia, _activarDesactivar, callback) {
+    var query = 'UPDATE `noticias` SET activo = ' + _activarDesactivar + 
+    ' where id_noticia = ' + _id_noticia;
+    console.log(query)
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la activación o desactivación de la noticia.');
+      }
+    });
+  }
+    
+  /** ACTIVAR / DESACTIVAR CLIENTES  
+   *  Activa / Desactiva un cliente pasado como id
+   */    
+  interfaceDB.activarDesactivarCliente = function(_id_cliente, _activarDesactivar, callback) {
+    var query = 'UPDATE `clientes` SET activo = ' + _activarDesactivar +
+    ' where id_cliente = ' + _id_cliente;
+    console.log(query)
+    interfaceDB.connection.query(query, function(err, rows, fields) {
+      if (!err) {
+        if(callback)
+          callback();
+      } else {
+        console.log('Error en la activación o desactivación del cliente.');
+      }
+    });
+  }
+  
   
 /*******************ELIMINACIÓN DE DATOS*******************/
   /** ELIMINACIÓN DE DATOS CLIENTE  

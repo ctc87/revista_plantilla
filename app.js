@@ -71,7 +71,9 @@ app.post('/config/uploadNoticiaImage', ensureLoggedIn, function(req, res, next) 
         req.body.fuenteNombre, 
         req.body.fecha, 
         interfaceDB.objetoIds.id_municipio,
-        req.body.portada, 
+        req.body.portada,   
+        req.body.portadaZona,   
+        req.body.publirep, 
         function(){
           console.log("insertada noticia");
         });
@@ -79,6 +81,7 @@ app.post('/config/uploadNoticiaImage', ensureLoggedIn, function(req, res, next) 
     interfaceIMG.guardarImagen(false, req.file.path, target_path, interfaceIMG.putAspectRatioThreeOnepointFive,
     function(){
       interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
+        console.log("uploadNoticiaImage");
         interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
         res.redirect("/config/noticias#insertar");
       });
@@ -122,6 +125,7 @@ app.post('/uploadUserImage', ensureLoggedIn, function (req, res, next) {
               interfaceDB.objetoIds.id_cliente, 
               function(){
                 interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function() {
+                  console.log("uploadUserImage");
                   interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);               
                 });
               });
@@ -137,10 +141,7 @@ app.post('/uploadUserImage', ensureLoggedIn, function (req, res, next) {
     var target_path = './uploads/' + req.file.originalname; // nombre original del archivo
     interfaceIMG.guardarImagen(true, req.file.path, target_path, funcionAspectRatio,
     function(){
-      interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
-        interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
-        res.redirect("/config/clientes#insertar");
-      });
+      res.redirect("/config/clientes#insertar");
     },
     function(){
       res.render('error' + err);   // Manejar aqui error de escritura 
@@ -199,6 +200,7 @@ app.post('/config/modificarCliente', ensureLoggedIn, function (req, res, next) {
             interfaceDB.modificarTamanyoLogo(req.body.tamnyo_add, req.body.id_cliente, function(){
               funcionAspectRatio('' + originalImage, '' + req.body.old_logo);
               interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
+                console.log('modificarCliente');
                 interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
                 res.redirect("/config/clientes#modificar");
               });
@@ -241,8 +243,11 @@ app.post('/config/modificarNoticia', ensureLoggedIn, function (req, res, next) {
         req.body.fecha, 
         interfaceDB.objetoIds.id_municipio,
         req.body.portada,  
+        req.body.portadaZona,  
+        req.body.publirep,  
         function(){
           interfaceDB.crearObjetoNumAnunciosNoticias(interfaceDB.objetoIds.id_municipio, function(){
+            console.log('modificarNoticia');
             interfaceDB.datosIniciales(interfaceDB.objetoIds.id_municipio);
             res.redirect("/config/noticias#modificar");
         });
@@ -288,7 +293,6 @@ app.get('/config/clientes', ensureLoggedIn, function (req, res, next) {
     }); // creamos objeto menu
 });
 
-/** BACKEND falta configurar inicio de sesion */
 app.get('/config/noticias', ensureLoggedIn, function (req, res, next) {
   interfaceDB.resetArrays();
    var order = req.query.ordenar ? req.query.ordenar : "id_noticia";
@@ -309,7 +313,18 @@ app.get('/config/noticias', ensureLoggedIn, function (req, res, next) {
 });
 
 
-/** BACKEND falta configurar el inicio de sesion */
+app.get('/config/activarDesactivarNoticia', ensureLoggedIn, function (req, res, next) {
+  interfaceDB.activarDesactivarNoticia(req.query.id_noticia, req.query.activar, function(){
+    res.redirect("/config/noticias#modificar");  
+  });
+});
+
+app.get('/config/activarDesactivarCliente', ensureLoggedIn, function (req, res, next) {
+  interfaceDB.activarDesactivarCliente(req.query.id_cliente, req.query.activar, function(){
+    res.redirect("/config/clientes#modificar");  
+  });
+});
+
 app.get('/config', ensureLoggedIn, function (req, res, next) {
    interfaceDB.crearObjetoMenu(false, false,  function() {
     var objectShow = {}
@@ -320,6 +335,10 @@ app.get('/config', ensureLoggedIn, function (req, res, next) {
 
 // PORTADA falta definir la estructura para los elementos de portada en la BD y renderizarla con jade
 app.get("/",function(req,res){
+  
+      // interfaceDB.crearObjetoNumAnunciosNoticias(3, function(){
+      //   interfaceDB.datosIniciales(3);
+      // });
   interfaceDB.resetArrays();
   interfaceDB.crearObjetoMenu(true, true, function() {
     var objectShow = {};
@@ -331,6 +350,7 @@ app.get("/",function(req,res){
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
         objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
+        objectShow.publireportaje = interfaceDB.publireportaje;
         res.render('indexSearch2', objectShow);
       });
     });
@@ -349,6 +369,7 @@ app.get('/show', function(req, res) {
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
         objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
+        objectShow.publireportaje = interfaceDB.publireportaje;
         res.render('indexSearch2', objectShow);
       });
     });

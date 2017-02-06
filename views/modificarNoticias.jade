@@ -1,5 +1,7 @@
 mixin noticia(noticias, index)
+    - var portadaZonaSiNo = noticias[index].portadaZona ? 'Si' : 'No';
     - var portadaSiNo = noticias[index].portada ? 'Si' : 'No';
+    - var publirepSiNO = noticias[index].publirep ? 'Si' : 'No';
     // button.btn.btn-primary(data-toggle='modal', data-target='#mod-#{id_noticia}') Large modal
     .modal.fade(style="top:45%" id='mod-#{noticias[index].id_noticia}' tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true')
       .modal-dialog.modal-lg
@@ -30,6 +32,12 @@ mixin noticia(noticias, index)
                 b Portada: 
                 | #{portadaSiNo}
             p 
+                b Portada Zona: 
+                | #{portadaZonaSiNo}
+            p 
+                b Publi Reportaje: 
+                | #{publirepSiNO}
+            p 
                 b Municipio: 
                 | #{noticias[index].id_municipio}
             p 
@@ -42,10 +50,20 @@ mixin noticia(noticias, index)
     tr
         td #{noticias[index].id_noticia}
         td #{portadaSiNo}
+        td #{portadaZonaSiNo}
+        td #{publirepSiNO}
         td #{noticias[index].fecha}
         td #{noticias[index].titular}
         td #{noticias[index].id_municipio}
         td #{noticias[index].fuente_nombre}
+        
+        - var icono =  noticias[index].activo ? "glyphicon-ok" : "glyphicon-remove" ;
+        - var color =  noticias[index].activo ? "btn-success" : "btn-danger" ;
+        
+        td 
+            a(href="/config/activarDesactivarNoticia?id_noticia=#{noticias[index].id_noticia}&activar=#{!noticias[index].activo}")
+                button.btn(class="#{color}" type='button', aria-label='Left Align')
+                    span.glyphicon(aria-hidden='true' class="#{icono}") 
         td 
             button.btn.btn-info(type='button', aria-label='Left Align' onmouseover="document.getElementById('#{noticias[index].id_noticia}').style.display='block';", onmouseout="document.getElementById('#{noticias[index].id_noticia}').style.display='none';") 
                 span.glyphicon.glyphicon-picture(aria-hidden='true')
@@ -76,6 +94,10 @@ mixin noticia(noticias, index)
         th  
          a(href="/config/noticias?ordenar=portada#modificar") Portada
         th  
+         a(href="/config/noticias?ordenar=portada#modificar") Portada Zona
+        th  
+         a(href="/config/noticias?ordenar=portada#modificar") Publi Reportaje
+        th  
          a(href="/config/noticias?ordenar=fecha#modificar")  Fecha
         th  
          a(href="/config/noticias?ordenar=titular#modificar")  Titular
@@ -83,6 +105,7 @@ mixin noticia(noticias, index)
          a(href="/config/noticias?ordenar=nombre_municipio#modificar")  Municipio
         th   
          a(href="/config/noticias?ordenar=fuente_nombre#modificar") Nombre fuente
+        th Activo
         th Img
         th Link
         th Cont
