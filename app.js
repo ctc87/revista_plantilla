@@ -388,6 +388,7 @@ app.get('/showZona', function(req, res) {
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
         objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
+        objectShow.publireportaje = interfaceDB.publireportaje;
         res.render('indexSearch2', objectShow);
       });
     });

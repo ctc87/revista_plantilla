@@ -29,7 +29,8 @@ h1,h2,h3,h4,h5,h6 {font-family: 'Roboto', sans-serif;font-weight: 600;color: #11
 p {margin: 0 0 20px;}
 
 a {
-   color: #7DC314;
+   color: #000000;
+   /*color: #7DC314;*/
    -webkit-transition: all .2s ease-in-out;
    -moz-transition: all .2s ease-in-out;
    transition: all .2s ease-in-out;
@@ -76,9 +77,14 @@ body.sub-page .logo {margin: 110px 0 80px;background: url(../images/bg.jpg) fixe
 /* ---------------------------------------------------------------------------- */
 /* ------------------------------------Menu------------------------------------ */
 /* ---------------------------------------------------------------------------- */
-#menu {background-color: #252628;border-radius: 0;}
+
+#menu .hora-feliz a{color: black !important}
+#menu .hora-feliz a:hover{color: #FD8411 !important}
+/*#menu {background-color: #252628;border-radius: 0;}  #FD8411 */
+#menu {background-color:#548FD9 ;border-radius: 0;}
 #menu a.navbar-brand:hover{color: #fff;}
-#menu .navbar-brand{margin: 0;padding: 14px 18px;background-color: #000000;height: auto;text-transform: uppercase;}
+/*#menu .navbar-brand{margin: 0;padding: 14px 18px;background-color: #000000;height: auto;text-transform: uppercase;}*/
+#menu .navbar-brand{margin: 0;padding: 14px 18px;background-color: #FD8411;height: auto;text-transform: uppercase;}
 #menu .logo {}
 #menu .navbar-collapse{padding:0;}
 #menu .dropdown-menu {background-color: #fff;border:none;}
@@ -93,7 +99,8 @@ body.sub-page .logo {margin: 110px 0 80px;background: url(../images/bg.jpg) fixe
 #menu ul.nav li.dropdown a{border-top-left-radius: 5px;border-top-right-radius: 5px;border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;}
 #menu .nav > li > a:hover, #menu .nav > li > a:focus{background-color: #fff;color:#000;}
 
-#menu .top-social{background-color:#505052;padding: 5px;font-size: 20px; text-align: center;}
+/*#menu .top-social{background-color:#505052;padding: 5px;font-size: 20px; text-align: center;}*/
+#menu .top-social{background-color:#FD8411;padding: 5px;font-size: 20px; text-align: center;}
 #menu ul.top-social{margin: 0;}
 #menu ul.top-social  li{height: 38px; width: 38px; }
 #menu ul.top-social a i{color: #fff;line-height: 1.9;height: 38px; width: 38px;border-radius: 50%;background-color: #252628;}
@@ -102,7 +109,10 @@ body.sub-page .logo {margin: 110px 0 80px;background: url(../images/bg.jpg) fixe
 #menu .btn-navbar {font-size: 20px;color: #FFF;padding: 5px 15px;float: right;border: 3px solid #fff;}
 
 @media  (max-width: 768px){
-	#menu {background-color: #000;border-radius: 0;}
+	#menu {
+		/*background-color: #000;*/
+		border-radius: 0;
+	}
 }
 
 @media  (min-width: 768px) {
@@ -154,13 +164,15 @@ header{}
 /* Carousel Header Styles */
 @media (max-width: 768px) { 
 .header-text {position: absolute;top: 10%;left: 1.8%;right: auto;width: 96.66666666666666%;color: #fff;}
-.header-text h2 {font-size: 20px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #DA251D;display:inline-block;color:#fff;}
+.header-text h2 {font-size: 20px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #548FD9;display:inline-block;color:#fff;}
 .header-text h3 {font-size: 17px;color: #fff; background-color: rgba(0, 0, 0, 0.5)}
 
 }
 @media (min-width: 768px) { 
 .header-text {position: absolute;top: 10%;left: 1.8%;right: auto;width: 96.66666666666666%;color: #fff;}
-.header-text h2 {font-size: 30px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #DA251D;display:inline-block;color:#fff;}
+.header-text h2 {font-size: 30px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #548FD9;display:inline-block;color:#fff;}
+/*.header-text h2 {font-size: 30px;padding: 10px;color: #fff;text-transform: uppercase;background-color: #DA251D;display:inline-block;color:#fff;}*/
+/*.header-text h3 {font-size: 25px;color: #fff; background-color: rgba(0, 0, 0, 0.5)}*/
 .header-text h3 {font-size: 25px;color: #fff; background-color: rgba(0, 0, 0, 0.5)}
 }
 

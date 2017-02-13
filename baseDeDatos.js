@@ -161,6 +161,7 @@
     var query = 'Select * FROM `noticias` ' +  where;
     var completed = false;
     var i = 0;
+    // console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(rows.length < 1) {
@@ -226,13 +227,14 @@
     query += 'ORDER BY ' + _order + ';';
     var completed = false;
     var i = 0;
-    console.log(query)
+    // console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         if(rows.length < 1) {
           callback();
         }
         if(!_portada) {
+          console.log("no noticias")
           for(var key in rows) {
             i++;
             if(!(i<rows.length)) {
@@ -716,8 +718,9 @@
       ', telefono = ' + _telefono + 
       ', mail = "' + _mail + 
       '", web = "' + _web + 
-      '" WHERE id_cliente = ' +  _id_cliente   + ';';
-      
+      '", portada = ' + _portada + 
+      ' WHERE id_cliente = ' +  _id_cliente   + ';';
+      console.log(query)
     interfaceDB.connection.query(query, function(err, rows, fields) {
       if (!err) {
         callback();

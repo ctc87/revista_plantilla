@@ -4,7 +4,7 @@ header
     .container
       .row
         .col-md-6
-          strong ¡Bienvenido!
+          strong ¡Aprovecha las ofertas de branch y hora feliz!
         .col-md-6
           ul.list-inline.top-link.link
             li
@@ -12,13 +12,13 @@ header
                 i.fa.fa-home
                 |  Home
             li
-              a(href='contact.html')
-                i.fa.fa-comments
-                |  Contacto
+              a(href='quienesSomos')
+                i.fa.fa-info-circle
+                |  Quienes somos
             li
               a(href='#')
-                i.fa.fa-question-circle
-                |  FAQ
+                i.fa.fa-cutlery
+                |  Ofertas
   // Navigation
   nav#menu.navbar.container
     .navbar-header
@@ -44,15 +44,11 @@ header
                       each municipio, j in arrayMun
                         li
                           a(href='./show?id=#{municipio.id}&municipio=#{municipio.nombre}') #{municipio.nombre}
-  
-        li 
-          a(href='quienesSomos')
-            i.fa.fa-info-circle
-            |  Quienes somos
-        li 
+
+        li.hora-feliz
           a(href='laRevista')
-            i.fa.fa-newspaper-o
-            |  La revista
+            |  OFERTAS  
+            i.fa.fa-cutlery
       ul.list-inline.navbar-right.top-social
         li
           a(href='#')
