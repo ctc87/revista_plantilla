@@ -3,8 +3,25 @@
     AuxFunciones.NUMERO_ANUNCIOS_1X1_FILA = 10;
     
     AuxFunciones.Explicaciones = {
-        quienesSomos : " QUIENES SOMOS SOMOS Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan.Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non.ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan",
-        revista : " ESTE PRODUCTO Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan.Aenean feugiat in ante et blandit. Vestibulum posuere molestie risus, ac interdum magna porta non.ac interdum magna porta non. Pellentesque rutrum fringilla elementum. Curabitur tincidunt porta lorem vitae accumsan"
+        quienesSomos : "<p>Nuestra guía empresarial pretende servir de trampolín al comercio en general, " +
+        "tanto a escala provincial (Santa Cruz de Tenerife) como municipal, proporcionando espacios de " +
+        "encuentro para pequeños y medianos empresarios. Para ello, la Revista Digital de este 'hosting' " +
+        "les ofrece la posibilidad de conocerse e intercambiar experiencias y productos. La idea es " +
+        "potenciar la visibilidad de los negocios y la mutua colaboración entre empresas de diversos " +
+        "sectores. La revista tiene periodicidad mensual y el espacio concedido dentro de ella a cada " +
+        "negocio está redireccionado a una página web ubicada en la portada de la plataforma internacional " + 
+        "<a href='tuislaenunclick.com'>tuislaenunclick.com</a>.</p>" +
+        "<p>Para evitar competencia entre negocios de un mismo sector, nuestra guía empresarial no aloja a dos " +
+        "negocios del mismo tipo dentro de una misma zona. El criterio de selección de las empresas de cada sector " + 
+        "corre a cargo de nuestro equipo de profesionales. A escala provincial, la guía tendrá un máximo de 750 " +
+        "miembros, pertenecientes a todos los sectores comerciales posibles, no estando incluidos los negocios " +
+        "de Hostelería, que contarán con su propia Revista Digital. También, la guía incluye un servicio de " +
+        "noticias actualizado diariamente y relacionado con el espacio donde los negocios desarrollan su actividad. " + 
+        "Además, quienes formen parte de esta guía empresarial contarán con asistencia legal y técnica gratuita, " +
+        "tanto telefónica como presencial.<p>" ,
+        
+        revista : "<p>Disfruta de los sabrosos descuentos y oportunidades que te ofrecen los socios de nuestra" +
+        "revista, como desayuno-almuerzo y hora feliz (19 a 20 horas) a precios inigualables.</p>"
     };
     
     AuxFunciones.partirArrayClientes1x1 = function(_array1x1, _arrayNoticias) { // obtenemos A 

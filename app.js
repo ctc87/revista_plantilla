@@ -349,6 +349,8 @@ app.get("/",function(req,res){
         // objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
+        console.log("noticias /");
+        console.log(objectShow.arrayNoticias);
         objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
         objectShow.publireportaje = interfaceDB.publireportaje;
         res.render('indexSearch2', objectShow);
@@ -368,6 +370,8 @@ app.get('/show', function(req, res) {
         // objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
+        console.log("noticias /show");
+        console.log(objectShow.arrayNoticias);
         objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
         objectShow.publireportaje = interfaceDB.publireportaje;
         res.render('indexSearch2', objectShow);
@@ -387,6 +391,8 @@ app.get('/showZona', function(req, res) {
         // objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
         objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
         objectShow.noticias = interfaceDB.arrayNoticias;
+        console.log("noticias /showZona");
+        console.log(objectShow.arrayNoticias);
         objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
         objectShow.publireportaje = interfaceDB.publireportaje;
         res.render('indexSearch2', objectShow);
@@ -414,7 +420,7 @@ app.get('/laRevista', function(req, res) {
   interfaceDB.crearObjetoMenu(true, true, function() {
     var objectShow = {};
     objectShow.menu = interfaceDB.objetoMenu;
-    objectShow.titulo = "Que es este producto";
+    objectShow.titulo = "Ofertas de nuestros socios";
     objectShow.contenido = funAux.Explicaciones.revista;
     res.render('explicacion', objectShow);
   }); // creamos objeto menu
@@ -436,7 +442,13 @@ app.get('/news', function(req, res) {
           objectShow.clients2x4 = interfaceDB.arrayClientes2x4;
           objectShow.clients1x1 = interfaceDB.arrayClientes1x1;
           objectShow.clients1x2 = interfaceDB.arrayClientes1x2;
-          objectShow.noticias = interfaceDB.arrayNoticias;
+          objectShow.noticias = interfaceDB.arrayNoticias.slice();
+          console.log( interfaceDB.arrayNoticias.length)
+          interfaceDB.arrayNoticias.shift();
+          // interfaceDB.arrayNoticias.shift();
+          console.log( interfaceDB.arrayNoticias.length)
+          objectShow.clients1x1Noticias = funAux.partirArrayClientes1x1(interfaceDB.arrayClientes1x1, interfaceDB.arrayNoticias);
+          console.log(objectShow.clients1x1Noticias)
           res.render('indexNews', objectShow);
         });
     });
