@@ -34,9 +34,9 @@
   interfaceDB.objetoMenu = {"arrayMenu":[]};
   interfaceDB.connection = mysql.createConnection({
     host     : '54.77.215.141',
-    user     : 'tuperiod_revista',
-    password : 'Dbz111187?',
-    database : 'tuperiod_revista'
+    user     : 'dominioc_empresa',
+    password : 'empre11187?9090',
+    database : 'dominioc_empresas'
   });
 
 /** CONEXION A LA BASE DE DATOS */
