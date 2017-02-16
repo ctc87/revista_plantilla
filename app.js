@@ -415,16 +415,6 @@ app.get('/quienesSomos', function(req, res) {
   }); // creamos objeto menu
 });
 
-app.get('/laRevista', function(req, res) {
-  interfaceDB.resetArrays();
-  interfaceDB.crearObjetoMenu(true, true, function() {
-    var objectShow = {};
-    objectShow.menu = interfaceDB.objetoMenu;
-    objectShow.titulo = "Ofertas de nuestros socios";
-    objectShow.contenido = funAux.Explicaciones.revista;
-    res.render('explicacion', objectShow);
-  }); // creamos objeto menu
-});
 
 
 app.get('/news', function(req, res) {

@@ -18,10 +18,7 @@
         "de Hostelería, que contarán con su propia Revista Digital. También, la guía incluye un servicio de " +
         "noticias actualizado diariamente y relacionado con el espacio donde los negocios desarrollan su actividad. " + 
         "Además, quienes formen parte de esta guía empresarial contarán con asistencia legal y técnica gratuita, " +
-        "tanto telefónica como presencial.<p>" ,
-        
-        revista : "<p>Disfruta de los sabrosos descuentos y oportunidades que te ofrecen los socios de nuestra" +
-        "revista, como desayuno-almuerzo y hora feliz (19 a 20 horas) a precios inigualables.</p>"
+        "tanto telefónica como presencial.<p>"
     };
     
     AuxFunciones.partirArrayClientes1x1 = function(_array1x1, _arrayNoticias) { // obtenemos A 

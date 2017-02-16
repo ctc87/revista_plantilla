@@ -4,7 +4,7 @@ header
     .container
       .row
         .col-md-6
-          strong ¡Aprovecha las ofertas de brunch y hora feliz!
+          strong ¡Disfruta de las mejores empresas de la provincia de Tenerife!
         .col-md-6
           ul.list-inline.top-link.link
             li
@@ -16,9 +16,9 @@ header
                 i.fa.fa-info-circle
                 |  Quienes somos
             li
-              a(href='#')
-                i.fa.fa-cutlery
-                |  Ofertas
+              a(href='http:\\tuislaenunclick.com')
+                i.fa.fa-info-circle
+                |  Tu isla en un click
   // Navigation
   nav#menu.navbar.container
     .navbar-header
@@ -26,7 +26,7 @@ header
         i.fa.fa-bars
       a.navbar-brand(href='/')
         .logo
-          span Revista Hosteler&iacute;a
+          span Revista Empresas
     .collapse.navbar-collapse.navbar-ex1-collapse
       ul.nav.navbar-nav
         li
@@ -44,11 +44,6 @@ header
                       each municipio, j in arrayMun
                         li
                           a(href='./show?id=#{municipio.id}&municipio=#{municipio.nombre}') #{municipio.nombre}
-
-        li.hora-feliz
-          a(href='laRevista')
-            |  OFERTAS  
-            i.fa.fa-cutlery
       ul.list-inline.navbar-right.top-social
         li
           a(href='#')
